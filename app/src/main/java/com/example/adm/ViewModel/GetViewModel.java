@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.adm.Classes.MyLog;
+import com.example.adm.Classes.SessionList;
 import com.example.adm.Classes.SharedPreferences_data;
 import com.example.adm.Fragments.Control_Panel.Func.FuncList;
 import com.example.adm.Fragments.Control_Panel.Header.HeaderList;
@@ -16,7 +17,7 @@ import com.example.adm.Fragments.Control_Panel.UpdatedList;
 import com.example.adm.Fragments.Orders.BottomSheet.OrderItemLists;
 import com.example.adm.Fragments.Orders.BottomSheet.SelectedHeader;
 import com.example.adm.Fragments.Orders.UserItemList;
-import com.example.adm.Fragments.Orders.OrderLists;
+import com.example.adm.Fragments.Orders.BottomSheet.OrderLists;
 import com.example.adm.Fragments.Users.UserDetailsList;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,7 +26,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.GsonBuilder;
 
-import java.nio.channels.SelectableChannel;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,32 +33,6 @@ import java.util.Objects;
 import java.util.Set;
 
 public class GetViewModel extends AndroidViewModel {
-    /*//Header List
-    private MutableLiveData<List<HeaderList>> headerListMutableList=new MutableLiveData<>();
-    private List<HeaderList> headerList=new ArrayList<>();
-
-    //func List
-    private MutableLiveData<List<FunList>> funMutableList=new MutableLiveData<>();
-    private List<FunList> funLists=new ArrayList<>();
-
-    //item list
-    private MutableLiveData<List<ItemList>> itemMutable=new MutableLiveData<>();
-    private List<ItemList> itemLists=new ArrayList<>();
-
-
-    //checked list
-    private MutableLiveData<List<CheckedList>> checkedList_Mutable=new MutableLiveData<>();
-    private List<CheckedList> checkedLists=new ArrayList<>();
-
-    //item list-get header
-    private MutableLiveData<List<ItemList>> itemHeaderMutable=new MutableLiveData<>();
-    private List<ItemList> itemHeaderLists=new ArrayList<>();
-
-    //Linked HashMap
-    private LinkedHashMap<String,List<ItemList>> f_map=new LinkedHashMap<>();
-    private List<LinkedHashMap<String,List<ItemList>>> s_map=new ArrayList<>();
-    private MutableLiveData<List<LinkedHashMap<String,List<ItemList>>>> s_mapMutable=new MutableLiveData<>();*/
-
     //check user login
     private MutableLiveData<Boolean> EmailMutable = new MutableLiveData<>();
     private String email;
@@ -110,6 +84,10 @@ public class GetViewModel extends AndroidViewModel {
     //item list
     private List<ItemArrayList> itemList = new ArrayList<>();
     private MutableLiveData<List<ItemArrayList>> itemListMutableLiveData = new MutableLiveData<>();
+    //session list
+    private List<SessionList> sessionLists = new ArrayList<>();
+    private MutableLiveData<List<SessionList>> sessionListsMutableLiveData = new MutableLiveData<>();
+
 
     //updated list
     private List<UpdatedList> updatedLists = new ArrayList<>();
@@ -130,7 +108,7 @@ public class GetViewModel extends AndroidViewModel {
     private MutableLiveData<List<SelectedHeader>> selectedHeadersMutableLiveData=new MutableLiveData<>();
 
     private String TAG = "ViewClassModel";
-    String s_user_name, func, header, item;
+    String s_user_name, func, header, item,session_title;
 
 
     public GetViewModel(@NonNull Application application) {
@@ -139,6 +117,7 @@ public class GetViewModel extends AndroidViewModel {
         firebaseDatabase = FirebaseDatabase.getInstance();
         GetOrdesList();
         GetUserList();
+        //GetSessionList();
         /*GetHeader();
         GetFun();
         GetItem();*/
@@ -146,6 +125,10 @@ public class GetViewModel extends AndroidViewModel {
         GetUpdateFun();
         GetUpdateItem();
 
+    }
+
+    public MutableLiveData<List<SessionList>> getSessionListsMutableLiveData() {
+        return sessionListsMutableLiveData;
     }
 
     public MutableLiveData<List<SelectedHeader>> getSelectedHeadersMutableLiveData() {
@@ -357,13 +340,21 @@ public class GetViewModel extends AndroidViewModel {
                         func = dataSnapshot.getKey().toString();
                         MyLog.e(TAG, "snap>>datasnap>>" + dataSnapshot);
                         MyLog.e(TAG, "snap>>datasnap>>" + dataSnapshot.getKey().toString());
-                        userItemLists = new ArrayList<>();
-                        for (DataSnapshot shot : dataSnapshot.getChildren()) {
-                            header = shot.getKey().toString();
-                            MyLog.e(TAG, "snap>>shots>>" + shot);
-                            MyLog.e(TAG, "snap>>shots>>" + shot.getKey().toString());
-                            size = 0;
-                            for (DataSnapshot data : shot.getChildren()) {
+
+                        sessionLists=new ArrayList<>();
+                        for (DataSnapshot shots : dataSnapshot.getChildren()) {
+                            session_title = shots.getKey().toString();
+
+                            MyLog.e(TAG, "snap>>shots>>" + shots);
+                            MyLog.e(TAG, "snap>>shots>>" + shots.getKey().toString());
+                            userItemLists = new ArrayList<>();
+                            for(DataSnapshot shotdatas:shots.getChildren())
+                            {
+                                header=shotdatas.getKey().toString();
+                                MyLog.e(TAG, "snap>>shotdatas>>" + shotdatas);
+                                MyLog.e(TAG, "snap>>shotdatas>>" + shotdatas.getKey().toString());
+                                size = 0;
+                            for (DataSnapshot data : shotdatas.getChildren()) {
                                 MyLog.e(TAG, "snap>>data ss>>" + data.getKey().toString());
 
                                 size++;
@@ -376,9 +367,18 @@ public class GetViewModel extends AndroidViewModel {
                             );
                             size = 0;
                             userItemLists.add(itemList);
-                            String s = s_user_name + " " + func;
+                            String s = s_user_name + "-" + func+"-"+session_title;
                             f_map.put(s, userItemLists);
-                            //MyLog.e(TAG,"snap>>\n"+ new GsonBuilder().setPrettyPrinting().create().toJson(f_map));
+
+
+                        }
+                            //set session list
+                            SessionList list1=new SessionList(
+                                    session_title
+                            );
+                            sessionLists.add(list1);
+                            sessionListsMutableLiveData.postValue(sessionLists);
+                            //MyLog.e(TAG,"session>>f_maps>>session list>>\n"+ new GsonBuilder().setPrettyPrinting().create().toJson(sessionLists));
 
                         }
                         OrderLists orderLists1 = new OrderLists(
@@ -395,7 +395,7 @@ public class GetViewModel extends AndroidViewModel {
                 f_mapMutable.postValue(f_map);
                 s_map.add(f_map);
                 s_mapMutable.postValue(s_map);
-                //MyLog.e(TAG,"f_maps>>map get>>\n"+ new GsonBuilder().setPrettyPrinting().create().toJson(s_map));
+                //MyLog.e(TAG,"session>>f_maps>>>>\n"+ new GsonBuilder().setPrettyPrinting().create().toJson(f_map));
             }
 
             @Override
@@ -673,60 +673,63 @@ public class GetViewModel extends AndroidViewModel {
     }
 
 
-    public void GetViewList(OrderLists orderLists) {
-        MyLog.e(TAG,"orderItemList_f_map>>f_maps>>map orderitem list before11>>\n"+ new GsonBuilder().setPrettyPrinting().create().toJson(orderItemList_f_map));
+    public void GetViewList(OrderLists orderLists, List<SessionList> sessionLists) {
+        //MyLog.e(TAG,"orderItemList_f_map>>f_maps>>map orderitem list before11>>\n"+ new GsonBuilder().setPrettyPrinting().create().toJson(orderItemList_f_map));
         orderItemList_f_map.clear();
         firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("Orders").child(orderLists.getS_user_name()).child(orderLists.getFunc());
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int size = 0;
+        for(int i=0;i<sessionLists.size();i++) {
+            MyLog.e(TAG,"sessionllist>>"+sessionLists.get(i).getSession_title());
+            databaseReference = firebaseDatabase.getReference("Orders").child(orderLists.getS_user_name()).child(orderLists.getFunc()).child(sessionLists.get(i).getSession_title());
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    int size = 0;
 
-                for (DataSnapshot datas : snapshot.getChildren()) {
-                    orderItemLists=new ArrayList<>();
-                    header = datas.getKey().toString();
-                    MyLog.e(TAG, "itemlists>>datas>>" + datas);
-                    MyLog.e(TAG, "orderItemList_f_map>>datas>>" + datas.getKey().toString());
-                    for (DataSnapshot dataSnapshot : datas.getChildren()) {
-                        MyLog.e(TAG, "itemlists>>datasnap>>" + dataSnapshot);
-                        MyLog.e(TAG, "orderItemList_f_map>>datasnap>>" + dataSnapshot.getKey().toString()+"\t==\t"+dataSnapshot.getValue().toString());
-                        OrderItemLists itemLists = new OrderItemLists(
-                                dataSnapshot.getValue().toString()
-                        );
-                        orderItemLists.add(itemLists);
-                        MyLog.e(TAG,"orderItemList_f_map>>f_maps>>map orderitem list before>>\n"+ new GsonBuilder().setPrettyPrinting().create().toJson(orderItemList_f_map));
-                        orderItemList_f_map.put(header,orderItemLists);
-                        MyLog.e(TAG,"orderItemList_f_map>>f_maps>>map orderitem list after>>\n"+ new GsonBuilder().setPrettyPrinting().create().toJson(orderItemList_f_map));
-                        size++;
+                    for (DataSnapshot datas : snapshot.getChildren()) {
+                        orderItemLists = new ArrayList<>();
+                        header = datas.getKey().toString();
+                        MyLog.e(TAG, "itemlists>>datas>>" + datas);
+                        MyLog.e(TAG, "orderItemList_f_map>>datas>>" + datas.getKey().toString());
+                        for (DataSnapshot dataSnapshot : datas.getChildren()) {
+                            MyLog.e(TAG, "itemlists>>datasnap>>" + dataSnapshot);
+                            MyLog.e(TAG, "orderItemList_f_map>>datasnap>>" + dataSnapshot.getKey().toString() + "\t==\t" + dataSnapshot.getValue().toString());
+                            OrderItemLists itemLists = new OrderItemLists(
+                                    dataSnapshot.getValue().toString()
+                            );
+                            orderItemLists.add(itemLists);
+                            //MyLog.e(TAG, "orderItemList_f_map>>f_maps>>map orderitem list before>>\n" + new GsonBuilder().setPrettyPrinting().create().toJson(orderItemList_f_map));
+                            orderItemList_f_map.put(header, orderItemLists);
+                            //MyLog.e(TAG, "sessionllist>>f_maps>>map orderitem list after>>\n" + new GsonBuilder().setPrettyPrinting().create().toJson(orderItemList_f_map));
+                            size++;
+                        }
+
                     }
+                    orderItemList_f_mapMutableLiveData.postValue(orderItemList_f_map);
+                    //get selected header list
+                    //get linked hasp map to view item list
+                    selectedHeaders.clear();
+                    Set<String> stringSet = orderItemList_f_map.keySet();
+
+                    for (String a : stringSet) {
+                        SelectedHeader aList = new SelectedHeader(
+                                a
+                        );
+                        selectedHeaders.add(aList);
+
+                    }
+                    selectedHeadersMutableLiveData.postValue(selectedHeaders);
+
+
+                    MyLog.e(TAG, "sessionllist>>f_maps>>map get>>\n" + new GsonBuilder().setPrettyPrinting().create().toJson(orderItemList_f_map));
 
                 }
-                orderItemList_f_mapMutableLiveData.postValue(orderItemList_f_map);
-                //get selected header list
-                //get linked hasp map to view item list
-                selectedHeaders.clear();
-                Set<String> stringSet = orderItemList_f_map.keySet();
 
-                for (String a : stringSet) {
-                    SelectedHeader aList = new SelectedHeader(
-                            a
-                    );
-                    selectedHeaders.add(aList);
-
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(getApplication(), "Fail to get data.", Toast.LENGTH_SHORT).show();
                 }
-                selectedHeadersMutableLiveData.postValue(selectedHeaders);
-
-
-                MyLog.e(TAG,"itemlists>>f_maps>>map get>>\n"+ new GsonBuilder().setPrettyPrinting().create().toJson(orderItemList_f_map));
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getApplication(), "Fail to get data.", Toast.LENGTH_SHORT).show();
-            }
-        });
+            });
+        }
     }
 
 }
