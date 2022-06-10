@@ -25,7 +25,7 @@ import java.util.List;
 
 public class UserSessionListAdapter extends RecyclerView.Adapter<UserSessionListAdapter.ViewHolder> {
     private Context context;
-    private String TAG = "ItemListAdapters";
+    private String TAG = "UserSessionListAdapter";
     private GetViewModel getViewModel;
     private List<SessionList> sessionLists=new ArrayList<>();
     private OrderLists orderLists1;
@@ -50,7 +50,6 @@ public class UserSessionListAdapter extends RecyclerView.Adapter<UserSessionList
     @Override
     public void onBindViewHolder(@NonNull UserSessionListAdapter.ViewHolder holder, int position) {
 
-        //MyLog.e(TAG, "item>>\n" + new GsonBuilder().setPrettyPrinting().create().toJson(userItemLists));
         final SessionList sessionLists1 = sessionLists.get(position);
         holder.session_title.setText(String.valueOf(sessionLists1.getSession_title()));
         //get item checked list in hash map
@@ -58,12 +57,11 @@ public class UserSessionListAdapter extends RecyclerView.Adapter<UserSessionList
             @Override
             public void onChanged(List<LinkedHashMap<String, List<UserItemList>>> linkedHashMaps) {
 
+                MyLog.e(TAG,"ada>>sessionLists>>>>"+ linkedHashMaps.size());
                 userItemLists=new ArrayList<>();
-
                 for(int i=0;i<linkedHashMaps.size();i++) {
-
+                    MyLog.e(TAG,"tasl>>"+orderLists1.getS_user_name()+"-"+ orderLists1.getFunc()+"-"+sessionLists1.getSession_title());
                     userItemLists = linkedHashMaps.get(i).get(orderLists1.getS_user_name()+"-"+ orderLists1.getFunc()+"-"+sessionLists1.getSession_title());
-                    MyLog.e(TAG,"session>>f_map>>after"+new GsonBuilder().setPrettyPrinting().create().toJson(userItemLists));
                     holder.itemList.setHasFixedSize(true);
                     holder.itemList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
                     UserItemListAdapters itemListAdapters = new UserItemListAdapters(context, getViewModel, userItemLists);

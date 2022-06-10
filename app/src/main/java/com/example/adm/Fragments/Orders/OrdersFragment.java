@@ -19,8 +19,10 @@ import com.example.adm.Fragments.Orders.BottomSheet.ViewCartAdapterHeader;
 import com.example.adm.R;
 import com.example.adm.ViewModel.GetViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -47,7 +49,7 @@ public class OrdersFragment extends Fragment {
     //bottom sheet view
     private RecyclerView recyclerview_session_view;
     private List<SessionList> sessionLists=new ArrayList<>();
-
+    private LinkedHashMap<String, List<SessionList>> stringListLinkedHashMap=new LinkedHashMap<>();
 
     private GetViewModel getViewModel;
 
@@ -90,7 +92,6 @@ public class OrdersFragment extends Fragment {
                 recyclerView_order_list.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
                 orderAdapters=new OrderAdapters(getContext(),orderLists,getViewModel);
                 recyclerView_order_list.setAdapter(orderAdapters);
-                //MyLog.e(TAG,"order>>\n"+ new GsonBuilder().setPrettyPrinting().create().toJson(orderLists));
             }
         });
 
@@ -102,11 +103,14 @@ public class OrdersFragment extends Fragment {
         recyclerview_session_view.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
 
+        ///get session hash map  List
         //get session list
-        getViewModel.getSessionListsMutableLiveData().observe(getViewLifecycleOwner(), new Observer<List<SessionList>>() {
+        getViewModel.getSs_f_mapMutableLiveData().observe(getViewLifecycleOwner(), new Observer<LinkedHashMap<String, List<SessionList>>>() {
             @Override
-            public void onChanged(List<SessionList> sessionLists1) {
-                sessionLists=sessionLists1;
+            public void onChanged(LinkedHashMap<String, List<SessionList>> stringListLinkedHashMap1) {
+                stringListLinkedHashMap=stringListLinkedHashMap1;
+
+
             }
         });
 
@@ -115,7 +119,12 @@ public class OrdersFragment extends Fragment {
             @Override
             public void onChanged(OrderLists orderLists) {
                 if(orderLists!=null) {
-                    getViewModel.GetViewList(orderLists,sessionLists);
+                    //get session list
+                    MyLog.e(TAG,"SessionList>>deatils>>"+orderLists.getS_user_name()+"\t\t"+orderLists.getFunc());
+                    sessionLists=stringListLinkedHashMap.get(orderLists.getS_user_name()+"-"+orderLists.getFunc());
+
+                    ViewCartAdapterSession viewCartAdapter=new ViewCartAdapterSession(getContext(),getViewModel,sessionLists,orderLists);
+                    recyclerview_session_view.setAdapter(viewCartAdapter);
                     bottomSheet.setContentView(bottom_view);
                     bottomSheet.show();
                 }
@@ -126,23 +135,6 @@ public class OrdersFragment extends Fragment {
             }
         });
 
-        /*//get selected List
-        getViewModel.getSelectedHeadersMutableLiveData().observe(getViewLifecycleOwner(), new Observer<List<SelectedHeader>>() {
-            @Override
-            public void onChanged(List<SelectedHeader> selectedHeaders) {
-                ViewCartAdapterHeader viewCartAdapter=new ViewCartAdapterHeader(getContext(),getViewModel,selectedHeaders);
-                recyclerview_order_item_details.setAdapter(viewCartAdapter);
-            }
-        });*/
-
-        //get session list
-        getViewModel.getSessionListsMutableLiveData().observe(getViewLifecycleOwner(), new Observer<List<SessionList>>() {
-            @Override
-            public void onChanged(List<SessionList> sessionLists) {
-                ViewCartAdapterSession viewCartAdapter=new ViewCartAdapterSession(getContext(),getViewModel,sessionLists);
-                recyclerview_session_view.setAdapter(viewCartAdapter);
-            }
-        });
 
 
 
