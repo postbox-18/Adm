@@ -16,6 +16,16 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
                 <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="user_name"
+                    android:gravity="center"
+                    android:textColor="@color/colorPrimary"
+                    android:textStyle="bold|italic"
+                    android:textSize="22dp"
+                    />
+                <TextView
                     android:id="@+id/func_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -23,15 +33,15 @@
                     android:gravity="center"
                     android:textColor="@color/colorSecondary"
                     android:textStyle="bold|italic"
-                    android:textSize="18dp"
+                    android:textSize="22dp"
                     />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerview_session_view"
+                    android:id="@+id/recyclerview_date_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     tools:itemCount="5"
-                    tools:listitem="@layout/bottom_sheet_order_session" />
+                    tools:listitem="@layout/bottom_sheet_order_date" />
             </LinearLayout>
 
     </LinearLayout>

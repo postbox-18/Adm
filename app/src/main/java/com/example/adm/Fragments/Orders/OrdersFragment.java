@@ -4,8 +4,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.adm.Classes.MyLog;
 import com.example.adm.Classes.SessionList;
+import com.example.adm.Fragments.Orders.BottomSheet.OrderItemLists;
 import com.example.adm.Fragments.Orders.BottomSheet.OrderLists;
 import com.example.adm.Fragments.Orders.BottomSheet.SelectedHeader;
 import com.example.adm.Fragments.Orders.BottomSheet.ViewCartAdapterHeader;
@@ -24,6 +27,7 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,12 +51,30 @@ public class OrdersFragment extends Fragment {
     private RecyclerView recyclerView_order_list;
 
     //bottom sheet view
-    private RecyclerView recyclerview_session_view;
-    private List<SessionList> sessionLists=new ArrayList<>();
-    private LinkedHashMap<String, List<SessionList>> stringListLinkedHashMap=new LinkedHashMap<>();
+    private RecyclerView recyclerview_date_view;
+    private TextView func_title,user_name;
 
     private GetViewModel getViewModel;
-
+    //order hash map
+    //order map
+    private LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String,
+            LinkedHashMap<String, List<OrderItemLists>>>>>> orderMap = new LinkedHashMap<>();
+    private LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String,
+            List<OrderItemLists>>>>>> b_orderMap = new LinkedHashMap<>();
+    //func map
+    private LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, List<OrderItemLists>>>>> orderFunc_Map = new LinkedHashMap<>();
+    //date map
+    private LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, List<OrderItemLists>>>> orderDateMap = new LinkedHashMap<>();
+    //header map
+    private LinkedHashMap<String, List<OrderItemLists>> orderHeaderMap = new LinkedHashMap<>();
+    //session map
+    private LinkedHashMap<String, LinkedHashMap<String, List<OrderItemLists>>> orderSessionMap = new LinkedHashMap<>();
+    //order list
+    private List<OrderLists> o_orderLists=new ArrayList<>();
+    //user name list
+    private List<Username> o_usernames=new ArrayList<>();
+    //date list
+    private List<SelectedDateList> o_dateLists=new ArrayList<>();
     public OrdersFragment() {
         // Required empty public constructor
     }
@@ -84,33 +106,97 @@ public class OrdersFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_orders, container, false);
 
         recyclerView_order_list = view.findViewById(R.id.recyclerview_order_list);
-
-        getViewModel.getOrderListsMutable().observe(getViewLifecycleOwner(), new Observer<List<OrderLists>>() {
+        recyclerView_order_list.setHasFixedSize(true);
+        recyclerView_order_list.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        //get order map
+        getViewModel.getOrderMapMutableLiveData().observe(getViewLifecycleOwner(), new Observer<LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, List<OrderItemLists>>>>>>>() {
             @Override
-            public void onChanged(List<OrderLists> orderLists) {
-                recyclerView_order_list.setHasFixedSize(true);
-                recyclerView_order_list.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-                orderAdapters=new OrderAdapters(getContext(),orderLists,getViewModel);
-                recyclerView_order_list.setAdapter(orderAdapters);
+            public void onChanged(LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, List<OrderItemLists>>>>>> stringLinkedHashMapLinkedHashMap) {
+                orderMap=new LinkedHashMap<>(stringLinkedHashMapLinkedHashMap);
+                b_orderMap=new LinkedHashMap<>(stringLinkedHashMapLinkedHashMap);
+
+                //get user name to set list
+                Set<String> stringSet = (orderMap).keySet();
+                List<String> aList = new ArrayList<String>(stringSet.size());
+                for (String x : stringSet)
+                    aList.add(x);
+                o_usernames.clear();
+                for(int i=0;i<aList.size();i++)
+                {
+                    Username username=new Username(
+                            aList.get(i)
+                    );
+                    o_usernames.add(username);
+                }
+                //set order item list
+                o_orderLists=new ArrayList<>();
+                for(int l=0;l<o_usernames.size();l++)
+                {
+                    String username=o_usernames.get(l).getUsername();
+                    orderFunc_Map=new LinkedHashMap<>(orderMap).get(username);
+                    //get func
+                    Set<String> stringSet1 = orderFunc_Map.keySet();
+                    List<String> aList1 = new ArrayList<String>(stringSet1.size());
+                    for (String x1 : stringSet1)
+                        aList1.add(x1);
+
+                    for(int k=0;k<aList1.size();k++)
+                    {
+                        OrderLists orderLists=new OrderLists(
+                                username,
+                                aList1.get(k)
+                        );
+                        o_orderLists.add(orderLists);
+                        orderAdapters=new OrderAdapters(getContext(),o_orderLists,getViewModel);
+                        recyclerView_order_list.setAdapter(orderAdapters);
+                    }
+
+                }
+
+
+
+
             }
         });
-
-        //Bottom sheet
+          //Bottom sheet
         BottomSheetDialog bottomSheet = new BottomSheetDialog(requireContext());
         View bottom_view = LayoutInflater.from(getContext()).inflate(R.layout.bottom_sheet_order_details, null);
-        recyclerview_session_view = bottom_view.findViewById(R.id.recyclerview_session_view);
-        recyclerview_session_view.setHasFixedSize(true);
-        recyclerview_session_view.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        func_title = bottom_view.findViewById(R.id.func_title);
+        user_name = bottom_view.findViewById(R.id.user_name);
+        recyclerview_date_view = bottom_view.findViewById(R.id.recyclerview_date_view);
+        recyclerview_date_view.setHasFixedSize(true);
+        recyclerview_date_view.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
 
-        ///get session hash map  List
-        //get session list
-        getViewModel.getSs_f_mapMutableLiveData().observe(getViewLifecycleOwner(), new Observer<LinkedHashMap<String, List<SessionList>>>() {
+        //get date map string click on date map
+        getViewModel.getDateStringLive().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
-            public void onChanged(LinkedHashMap<String, List<SessionList>> stringListLinkedHashMap1) {
-                stringListLinkedHashMap=stringListLinkedHashMap1;
+            public void onChanged(String s) {
+                MyLog.e(TAG, "bottom>>dateString>" +s);
+                String[] str=s.split("/");
+                String name=str[0];
+                String func=str[1];
+                String date=str[2];
 
+                orderFunc_Map=new LinkedHashMap<>(b_orderMap).get(name);
+                func_title.setText(func);
+                user_name.setText(name);
+                MyLog.e(TAG, "bottom>>orderFunc_Map>" + new GsonBuilder().setPrettyPrinting().create().toJson(orderFunc_Map));
 
+                orderDateMap=new LinkedHashMap<>(orderFunc_Map).get(func);
+                MyLog.e(TAG, "bottom>>orderDateMap>" + new GsonBuilder().setPrettyPrinting().create().toJson(orderDateMap));
+
+                o_dateLists=new ArrayList<>();
+                SelectedDateList list=new SelectedDateList(
+                        date
+                );
+                o_dateLists.add(list);
+                MyLog.e(TAG, "bottom>>o_dateLists>" + new GsonBuilder().setPrettyPrinting().create().toJson(o_dateLists));
+
+                ViewCartAdapterDate viewCartAdapterDate=new ViewCartAdapterDate(getContext(),getViewModel,orderDateMap,o_dateLists);
+                recyclerview_date_view.setAdapter(viewCartAdapterDate);
+                bottomSheet.setContentView(bottom_view);
+                bottomSheet.show();
             }
         });
 
@@ -121,10 +207,28 @@ public class OrdersFragment extends Fragment {
                 if(orderLists!=null) {
                     //get session list
                     MyLog.e(TAG,"SessionList>>deatils>>"+orderLists.getS_user_name()+"\t\t"+orderLists.getFunc());
-                    sessionLists=stringListLinkedHashMap.get(orderLists.getS_user_name()+"-"+orderLists.getFunc());
+                    orderFunc_Map=b_orderMap.get(orderLists.getS_user_name());
+                    func_title.setText(orderLists.getFunc());
+                    user_name.setText(orderLists.getS_user_name());
+                    orderDateMap=new LinkedHashMap<>(orderFunc_Map).get(orderLists.getFunc());
 
-                    ViewCartAdapterSession viewCartAdapter=new ViewCartAdapterSession(getContext(),getViewModel,sessionLists,orderLists);
-                    recyclerview_session_view.setAdapter(viewCartAdapter);
+                    //get date list
+                    Set<String> stringSet = orderDateMap.keySet();
+                    List<String> aList = new ArrayList<String>(stringSet.size());
+                    for (String x : stringSet)
+                        aList.add(x);
+                    o_dateLists=new ArrayList<>();
+                    for(int i=0;i<aList.size();i++)
+                    {
+                        SelectedDateList list=new SelectedDateList(
+                                aList.get(i)
+                        );
+                        o_dateLists.add(list);
+                    }
+
+
+                    ViewCartAdapterDate viewCartAdapterDate=new ViewCartAdapterDate(getContext(),getViewModel,orderDateMap,o_dateLists);
+                    recyclerview_date_view.setAdapter(viewCartAdapterDate);
                     bottomSheet.setContentView(bottom_view);
                     bottomSheet.show();
                 }
@@ -134,6 +238,7 @@ public class OrdersFragment extends Fragment {
                 }
             }
         });
+
 
 
 
