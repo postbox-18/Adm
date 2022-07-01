@@ -15,23 +15,20 @@ import com.example.adm.Fragments.Control_Panel.Selected_UnSelected_List.FuncList
 import com.example.adm.Fragments.Control_Panel.Selected_UnSelected_List.HeaderList;
 import com.example.adm.Fragments.Control_Panel.Selected_UnSelected_List.ItemArrayList;
 import com.example.adm.Fragments.Control_Panel.UpdatedList;
-import com.example.adm.Fragments.Orders.BottomSheet.OrderItemLists;
-import com.example.adm.Fragments.Orders.BottomSheet.SelectedHeader;
-import com.example.adm.Fragments.Orders.UserItemList;
-import com.example.adm.Fragments.Orders.BottomSheet.OrderLists;
+import com.example.adm.Fragments.Orders.BottomSheet.Classes.OrderItemLists;
+import com.example.adm.Fragments.Orders.Classes.UserItemList;
+import com.example.adm.Fragments.Orders.BottomSheet.Classes.OrderLists;
 import com.example.adm.Fragments.Users.UserDetailsList;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 public class GetViewModel extends AndroidViewModel {
     //check user login
@@ -789,5 +786,19 @@ public class GetViewModel extends AndroidViewModel {
         databaseReference = firebaseDatabase.getReference("Items").child("Selected&UnSelected").child("List");
         databaseReference.child(header_title).child(item).setValue(selected);
 
+    }
+
+
+    public void DeleteDate(String s_user_name, String funcTitle, String gn_date) {
+        //remove old data
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference("Orders");
+        MyLog.e(TAG, "dates>> funcTitle  " + funcTitle);
+        MyLog.e(TAG, "dates>> s_user_name  " + s_user_name);
+        MyLog.e(TAG, "dates>>date   " + gn_date);
+
+        //remove data
+        databaseReference.child(s_user_name).child(funcTitle).child(gn_date).removeValue();
+        MyLog.e(TAG, "dates remove commit");
     }
 }
