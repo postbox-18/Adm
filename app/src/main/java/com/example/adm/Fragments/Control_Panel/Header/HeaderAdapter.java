@@ -4,37 +4,44 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.adm.Classes.MyLog;
 
-import com.example.adm.Fragments.Control_Panel.Selected_UnSelected_List.HeaderList;
-import com.example.adm.Fragments.Control_Panel.Selected_UnSelected_List.ItemArrayList;
+import com.example.adm.Fragments.Control_Panel.Dish.DishList;
+import com.example.adm.Fragments.Control_Panel.Item.ItemAdapter;
+import com.example.adm.Fragments.Control_Panel.Item.ItemArrayList;
 import com.example.adm.R;
 import com.example.adm.ViewModel.GetViewModel;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 public class HeaderAdapter extends RecyclerView.Adapter<HeaderAdapter.ViewHolder> {
     private List<HeaderList> headerLists;
     private Context context;
-    private String TAG="HeaderAdapter";
+    private String TAG = "HeaderAdapter";
     private GetViewModel getViewModel;
-    private LinkedHashMap<String, List<ItemArrayList>> itemArrayMap=new LinkedHashMap<>();
+    private int n = 1;
+    //header map
+    private LinkedHashMap<String, LinkedHashMap<String, List<DishList>>> itemArrayMap = new LinkedHashMap<>();
+    //dish map
+    private LinkedHashMap<String, List<DishList>> dishListMap = new LinkedHashMap<>();
     private List<ItemArrayList> itemList = new ArrayList<>();
-    public HeaderAdapter(Context context, List<HeaderList> headerLists, GetViewModel getViewModel) {
+
+    public HeaderAdapter(Context context, List<HeaderList> headerLists, GetViewModel getViewModel, LinkedHashMap<String, LinkedHashMap<String, List<DishList>>> itemArrayListMap) {
         this.headerLists = headerLists;
         this.context = context;
+        this.itemArrayMap = itemArrayListMap;
         this.getViewModel = getViewModel;
     }
 
@@ -51,26 +58,43 @@ public class HeaderAdapter extends RecyclerView.Adapter<HeaderAdapter.ViewHolder
     public void onBindViewHolder(@NonNull HeaderAdapter.ViewHolder holder, int position) {
         final HeaderList item1 = headerLists.get(position);
         holder.header_title.setText(item1.getHeader());
-
-        //get hash map
-        getViewModel.getItemArrayListMapMutableLiveData().observe((LifecycleOwner) context, new Observer<LinkedHashMap<String, List<ItemArrayList>>>() {
-            @Override
-            public void onChanged(LinkedHashMap<String, List<ItemArrayList>> stringListLinkedHashMap) {
-                itemArrayMap=stringListLinkedHashMap;
+        /*holder.recyclerview_item_list.setHasFixedSize(true);
+        holder.recyclerview_item_list.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));*/
 
 
-            }
-        });
         //onclick
         holder.header_cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                //get item list
-                itemList=itemArrayMap.get(item1.getHeader());
+                //holder.header_title_set.setText(item1.getHeader());
+//                holder.item_cardView.setVisibility(View.VISIBLE);
+
+                dishListMap = itemArrayMap.get(item1.getHeader());
+                Set<String> stringSet = dishListMap.keySet();
+                List<String> aList = new ArrayList<String>(stringSet.size());
+                for (String x : stringSet)
+                    aList.add(x);
+                itemList = new ArrayList<>();
+                for (int i = 0; i < aList.size(); i++) {
+                    String[] str = (aList.get(i)).split("_");
+                    ItemArrayList list = new ItemArrayList();
+                    list.setItem(str[0]);
+                    list.setSelected(str[1]);
+                    itemList.add(list);
+                }
+
+                /*ItemAdapter itemAdapter = new ItemAdapter(context, getViewModel, itemList, dishListMap);
+                holder.recyclerview_item_list.setAdapter(itemAdapter);*/
+                getViewModel.setItemArrayList(itemList);
+                getViewModel.setDishListMap(dishListMap);
+                getViewModel.setHeader_title(item1.getHeader());
+                getViewModel.setI_value(3);
+                /*//get item list
+                //itemList=itemArrayMap.get(item1.getHeader());
                 getViewModel.setHeader_title(item1.getHeader());
                 getViewModel.setItemArrayList(itemList);
-                getViewModel.setI_value(3);
+                getViewModel.setI_value(3);*/
 
             }
         });
@@ -91,7 +115,10 @@ public class HeaderAdapter extends RecyclerView.Adapter<HeaderAdapter.ViewHolder
         public ViewHolder(View view) {
             super(view);
             header_title = view.findViewById(R.id.header_title);
+            //header_title_set = view.findViewById(R.id.header_title_set);
             header_cardView = view.findViewById(R.id.header_cardView);
+            //recyclerview_item_list = view.findViewById(R.id.recyclerview_item_list);
+            //item_cardView = view.findViewById(R.id.item_cardView);
         }
     }
 }
