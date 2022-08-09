@@ -1,6 +1,6 @@
 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
 
-https://postbox-18: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@github.com/postbox-18/KCS.git
+https://postbox-18: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@github.com/postbox-18/Adm.git
 
 https://aliahmedbd.github.io/Ticker-Using-Recycler-View-Android/
 https://stackoverflow.com/questions/31253555/how-do-i-create-a-circular-endless-recyclerview
@@ -13,8 +13,10 @@ Pending
 
 8-highlight unread notify msg
 10-count in notify tab
-11-
-
+11-control panel add biometrics
+12-control panel to change head admin to send opt to new register in ADM.
+13-Admin data can't in "Users-Id" and also in "Users-Id" data can't have in "Admin" in Both Register and Login.
+14
 Solved
 1-Control Panel update header and also change in database which have data
 1-add phone to order save list in base
