@@ -15,7 +15,8 @@ Pending
 10-count in notify tab
 11-control panel add biometrics
 12-control panel to change head admin to send opt to new register in ADM.
-14
+14-adding phone number to send register otp for registering new adm in control panel to control the msg whom gonna send otp.
+15
 Solved
 1-Control Panel update header and also change in database which have data
 1-add phone to order save list in base
