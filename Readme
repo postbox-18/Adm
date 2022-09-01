@@ -16,7 +16,6 @@ Pending
 11-control panel add biometrics
 12-control panel to change head admin to send opt to new register in ADM.
 15-only header adm only have control panel for phone number to send admin
-16-hash map for phone number switch to true or false to upload in database.
 17-admin users list in control panel have rights for master admin
 19-
 
@@ -44,6 +43,10 @@ Solved
 13-Admin data can't in "Users-Id" and also in "Users-Id" data can't have in "Admin" in Both Register and Login.
 14-store token in database to reciver adm token.
 18-ADDED FIRE CRASH ANALYSIS.
+
+
+FAILED
+16-hash map for phone number switch to true or false to upload in database.
 
 
 
