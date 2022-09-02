@@ -281,6 +281,7 @@ public class GetViewModel extends AndroidViewModel {
                     AdminUsersLists adminUsersLists1 = new AdminUsersLists();
                     adminUsersLists1.setPhone_number(datas.child("phone_number").getValue().toString());
                     adminUsersLists1.setEmail(datas.child("email").getValue().toString());
+                    adminUsersLists1.setPrimary(datas.child("primary").getValue().toString());
                     adminUsersLists1.setUser_name(datas.child("username").getValue().toString());
                     adminUsersLists.add(adminUsersLists1);
 

@@ -4,11 +4,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.adm.Classes.CheckPhoneNumber;
@@ -49,27 +51,26 @@ public class AdapterAdminUsers extends RecyclerView.Adapter<AdapterAdminUsers.Vi
         holder.email.setText(detailsList.getEmail());
         holder.phone_number.setText(detailsList.getPhone_number());
 
+        if (detailsList.getPrimary().equals("true")) {
+            holder.switchView.setChecked(true);
+        } else if (detailsList.getPrimary().equals("false")) {
+            holder.switchView.setChecked(false);
+        }
 
-        //holder.switchView.setChecked(false);
 
-
-        /*holder.switchView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+       /* holder.switchView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(compoundButton.isChecked())
-                {
-                    MyLog.e(TAG, "switch>>get enabled"+b );
-                    holder.phone_number.setTextColor(context.getResources().getColor(R.color.colorSecondary));
-                }
-                else
-                {
-                    MyLog.e(TAG, "switch>>get not enabled" +b);
-                    holder.phone_number.setTextColor(context.getResources().getColor(R.color.light_gray));
+                if (compoundButton.isChecked()) {
+                    MyLog.e(TAG, "switch>>get enabled" + b);
+
+                } else {
+                    MyLog.e(TAG, "switch>>get not enabled" + b);
+
 
                 }
                 //selectedHeaderMap.get(header_title).get(position).setSelected(String.valueOf(b));
-                getViewModel.updatePhoneNumberItem(phone_number, checkPhoneNumberList.get(position).getPhone_number(),String.valueOf(b), null);
-
+                getViewModel.updatePhoneNumberItem(phone_number, checkPhoneNumberList.get(position).getPhone_number(), String.valueOf(b), null);
 
 
             }
@@ -86,6 +87,7 @@ public class AdapterAdminUsers extends RecyclerView.Adapter<AdapterAdminUsers.Vi
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView profile;
+        private SwitchCompat switchView;
         private TextView user_name, email, phone_number;
 
         public ViewHolder(View view) {
@@ -94,6 +96,7 @@ public class AdapterAdminUsers extends RecyclerView.Adapter<AdapterAdminUsers.Vi
             user_name = view.findViewById(R.id.user_name);
             email = view.findViewById(R.id.email);
             phone_number = view.findViewById(R.id.phone_number);
+            switchView = view.findViewById(R.id.switchView);
 
 
         }

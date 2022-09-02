@@ -1,10 +1,18 @@
 package com.example.adm.Fragments.Control_Panel.AdminUsers;
 
 public class AdminUsersLists {
-    private String  user_name,email,phone_number;
+    private String  user_name,email,phone_number,primary;
     public AdminUsersLists()
     {
 
+    }
+
+    public void setPrimary(String primary) {
+        this.primary = primary;
+    }
+
+    public String getPrimary() {
+        return primary;
     }
 
     public void setEmail(String email) {

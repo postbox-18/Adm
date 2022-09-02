@@ -50,7 +50,7 @@ public class AdapterAdminUsersPhonenumbers extends RecyclerView.Adapter<AdapterA
     @Override
     public void onBindViewHolder(@NonNull AdapterAdminUsersPhonenumbers.ViewHolder holder, int position) {
         final CheckPhoneNumber item1 = checkPhoneNumberList.get(position);
-        holder.phone_number.setText(item1.getPhone_number());
+        //holder.phone_number.setText(item1.getPhone_number());
 
         adminUsersLists=adminUsersMap.get(item1.getPhone_number());
         adapterAdminUsers=new AdapterAdminUsers(context,getViewModel,adminUsersLists);
