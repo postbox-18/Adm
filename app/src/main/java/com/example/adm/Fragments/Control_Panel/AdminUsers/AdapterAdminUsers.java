@@ -11,14 +11,17 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.adm.Classes.CheckPhoneNumber;
 import com.example.adm.Classes.MyLog;
 import com.example.adm.R;
 import com.example.adm.ViewModel.GetViewModel;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class AdapterAdminUsers extends RecyclerView.Adapter<AdapterAdminUsers.ViewHolder> {
@@ -27,12 +30,17 @@ public class AdapterAdminUsers extends RecyclerView.Adapter<AdapterAdminUsers.Vi
     private Context context;
     private String TAG = "AdapterPhoneNumberControlPanel";
     private GetViewModel getViewModel;
+    private String phone_number;
+    private LinkedHashMap<String, List<AdminUsersLists>> adminUsersMap = new LinkedHashMap<>();
 
 
-    public AdapterAdminUsers(Context context, GetViewModel getViewModel, List<AdminUsersLists> adminUsersLists) {
+
+    public AdapterAdminUsers(Context context, GetViewModel getViewModel, List<AdminUsersLists> adminUsersLists, String phone_number, LinkedHashMap<String, List<AdminUsersLists>> adminUsersMap) {
         this.context = context;
         this.getViewModel = getViewModel;
+        this.phone_number = phone_number;
         this.adminUsersLists = adminUsersLists;
+        this.adminUsersMap = adminUsersMap;
     }
 
     @NonNull
@@ -53,12 +61,20 @@ public class AdapterAdminUsers extends RecyclerView.Adapter<AdapterAdminUsers.Vi
 
         if (detailsList.getPrimary().equals("true")) {
             holder.switchView.setChecked(true);
+            holder.user_name.setTextColor(context.getResources().getColor(R.color.black));
+            holder.email.setTextColor(context.getResources().getColor(R.color.black));
+            holder.phone_number.setTextColor(context.getResources().getColor(R.color.black));
+            holder.profile.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_chef));
         } else if (detailsList.getPrimary().equals("false")) {
+            holder.user_name.setTextColor(context.getResources().getColor(R.color.text_silver));
+            holder.email.setTextColor(context.getResources().getColor(R.color.text_silver));
+            holder.profile.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_chef_silver));
+            holder.phone_number.setTextColor(context.getResources().getColor(R.color.text_silver));
             holder.switchView.setChecked(false);
         }
 
 
-       /* holder.switchView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        holder.switchView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (compoundButton.isChecked()) {
@@ -69,12 +85,17 @@ public class AdapterAdminUsers extends RecyclerView.Adapter<AdapterAdminUsers.Vi
 
 
                 }
-                //selectedHeaderMap.get(header_title).get(position).setSelected(String.valueOf(b));
-                getViewModel.updatePhoneNumberItem(phone_number, checkPhoneNumberList.get(position).getPhone_number(), String.valueOf(b), null);
+
+                detailsList.setPrimary(String.valueOf(b));
+                MyLog.e(TAG,"updatedSwitch>>AdminUsers>>"+new GsonBuilder().setPrettyPrinting().create().toJson(adminUsersLists));
+                MyLog.e(TAG,"updatedSwitch>>adminUsersMap>>"+new GsonBuilder().setPrettyPrinting().create().toJson(adminUsersMap));
+
+                getViewModel.UpdatedMasterAdminAccess(phone_number,detailsList,b);
 
 
             }
-        });*/
+        });
+
     }
 
 

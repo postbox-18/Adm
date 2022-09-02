@@ -1,4 +1,4 @@
-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
+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
 
 https://postbox-18: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@github.com/postbox-18/Adm.git
 
@@ -9,19 +9,16 @@ https://www.techotopia.com/index.php/Working_with_Firebase_Realtime_Database_Lis
 
 
 
-Pending
-
+PENDING
 8-highlight unread notify msg
 10-count in notify tab
 11-control panel add biometrics
 12-control panel to change head admin to send opt to new register in ADM.
 15-only header adm only have control panel for phone number to send admin
-17-admin users list in control panel have rights for master admin
-19-
+19-bugs in adding data twice
+20-
 
-
-
-Solved
+SOLVED
 1-Control Panel update header and also change in database which have data
 1-add phone to order save list in base
         999999999
@@ -42,6 +39,7 @@ Solved
 9-tap to view the orders(NO NEED)
 13-Admin data can't in "Users-Id" and also in "Users-Id" data can't have in "Admin" in Both Register and Login.
 14-store token in database to reciver adm token.
+17-admin users list in control panel have rights for master admin
 18-ADDED FIRE CRASH ANALYSIS.
 
 

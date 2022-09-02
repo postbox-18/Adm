@@ -10,4 +10,5 @@
     <string name="session">Session</string>
     <string name="fcm_token">FCM Token: %s</string>
     <string name="access_token">fl81R5NJQVqwENG7x2uDAV:APA91bHelCCU6w6b5z773vskLIbaLPr9LFnZQZpJ7IbtEF_gOXCJYglNcvx7dgJgmVpwf8PEfxWbarcKBQI3KmItVWvpU91oUN-r6qcoDki8cY_Gj7Dhrz2EU1c8anYWtr8TrPtI76LZ</string>
+    <string name="version_0_1">version 1.0</string>
 </resources>

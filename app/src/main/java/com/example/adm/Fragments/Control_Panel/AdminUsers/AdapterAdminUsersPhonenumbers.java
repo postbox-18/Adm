@@ -53,7 +53,7 @@ public class AdapterAdminUsersPhonenumbers extends RecyclerView.Adapter<AdapterA
         //holder.phone_number.setText(item1.getPhone_number());
 
         adminUsersLists=adminUsersMap.get(item1.getPhone_number());
-        adapterAdminUsers=new AdapterAdminUsers(context,getViewModel,adminUsersLists);
+        adapterAdminUsers=new AdapterAdminUsers(context,getViewModel,adminUsersLists,item1.getPhone_number(),adminUsersMap);
         holder.recyclerView_adminUsers.setHasFixedSize(true);
         holder.recyclerView_adminUsers.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         holder.recyclerView_adminUsers.setAdapter(adapterAdminUsers);

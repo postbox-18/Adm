@@ -177,10 +177,9 @@ public class GetViewModel extends AndroidViewModel {
         super(application);
         //firebase
         firebaseDatabase = FirebaseDatabase.getInstance();
-
+        GetAdmin_Primary();
         CheckAdmDetails();
         CheckUserDetails();
-        GetAdmin_Primary();
 
         //GetUserList();
 
@@ -271,22 +270,30 @@ public class GetViewModel extends AndroidViewModel {
                 MyLog.e(TAG, "admin>>snap>>" + snapshot);
 
                 for (DataSnapshot datas : snapshot.getChildren()) {
-                    MyLog.e(TAG, "admin>>error>>at firebase  phone number " + datas.getKey());
-                    String str = datas.getKey();
-                    CheckPhoneNumber checkEmails1 = new CheckPhoneNumber(
-                            str);
-                    checkPhoneNumbers.add(checkEmails1);
-                    adminUsersLists = new ArrayList<>();
-                    MyLog.e(TAG, "admin>>snap>>email>>" + datas.child("email").getValue().toString());
-                    AdminUsersLists adminUsersLists1 = new AdminUsersLists();
-                    adminUsersLists1.setPhone_number(datas.child("phone_number").getValue().toString());
-                    adminUsersLists1.setEmail(datas.child("email").getValue().toString());
-                    adminUsersLists1.setPrimary(datas.child("primary").getValue().toString());
-                    adminUsersLists1.setUser_name(datas.child("username").getValue().toString());
-                    adminUsersLists.add(adminUsersLists1);
-
-
-                    adminUsersMap.put(str, adminUsersLists);
+                    if (Admin_Primary.equals(datas.getKey())) {
+                        continue;
+                    }
+                    else
+                    {
+                        try {
+                            MyLog.e(TAG, "admin>>datas>>at firebase  phone number " + datas.getKey());
+                            String str = datas.getKey();
+                            CheckPhoneNumber checkEmails1 = new CheckPhoneNumber(
+                                    str);
+                            checkPhoneNumbers.add(checkEmails1);
+                            adminUsersLists = new ArrayList<>();
+                            MyLog.e(TAG, "admin>>snap>>email>>" + datas.child("email").getValue().toString());
+                            AdminUsersLists adminUsersLists1 = new AdminUsersLists();
+                            adminUsersLists1.setPhone_number(datas.child("phone_number").getValue().toString());
+                            adminUsersLists1.setEmail(datas.child("email").getValue().toString());
+                            adminUsersLists1.setPrimary(datas.child("primary").getValue().toString());
+                            adminUsersLists1.setUser_name(datas.child("username").getValue().toString());
+                            adminUsersLists.add(adminUsersLists1);
+                            adminUsersMap.put(str, adminUsersLists);
+                        } catch (Exception e) {
+                            MyLog.e(TAG, "admin>>error>>" + e.getMessage());
+                        }
+                    }
 
                 }
 
@@ -412,6 +419,7 @@ public class GetViewModel extends AndroidViewModel {
                 MyLog.e(TAG, "Admin_Primary>>snap>>" + snapshot);
                 MyLog.e(TAG, "Admin_Primary>>snapshot>>" + snapshot.getValue().toString());
                 Admin_PrimaryLiveData.postValue(snapshot.getValue().toString());
+                Admin_Primary=snapshot.getValue().toString();
 
             }
 
@@ -1002,5 +1010,38 @@ public class GetViewModel extends AndroidViewModel {
             }
         });
     }
+
+    public void UpdatedMasterAdminAccess(String phone_number, AdminUsersLists detailsList, boolean b) {
+
+
+        //remove data
+        FirebaseDatabase firebaseDatabase1 = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference1 = firebaseDatabase1.getReference("Admin");
+        databaseReference1.child(phone_number).removeValue();
+
+        //add data
+        databaseReference = firebaseDatabase.getReference("Admin");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                MyLog.e(TAG, "Admin_Primary>>snap>>" + snapshot);
+                MyLog.e(TAG, "Admin_Primary>>snapshot>>" + snapshot.getValue().toString());
+                databaseReference.child(phone_number).child("email").setValue(detailsList.getEmail());
+                databaseReference.child(phone_number).child("phone_number").setValue(detailsList.getPhone_number());
+                databaseReference.child(phone_number).child("primary").setValue(b);
+                databaseReference.child(phone_number).child("username").setValue(detailsList.getUser_name());
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getApplication(), "Fail to get data.", Toast.LENGTH_SHORT).show();
+                MyLog.e(TAG, "list>>snap>>fun>>Fail to get data.");
+            }
+        });
+
+    }
+
+
 }
 
