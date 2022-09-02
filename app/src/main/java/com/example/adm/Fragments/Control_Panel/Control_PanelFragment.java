@@ -31,7 +31,7 @@ public class Control_PanelFragment extends Fragment {
 
 
     private GetViewModel getViewModel;
-    private CardView phone_number_Cardview,header_Cardview;
+    private CardView phone_number_Cardview,header_Cardview,adm_users_Cardview;
 
 
 
@@ -66,6 +66,7 @@ public class Control_PanelFragment extends Fragment {
 
         header_Cardview=view.findViewById(R.id.header_Cardview);
         phone_number_Cardview=view.findViewById(R.id.phone_number_Cardview);
+        adm_users_Cardview=view.findViewById(R.id.adm_users_Cardview);
 
         header_Cardview.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,6 +81,13 @@ public class Control_PanelFragment extends Fragment {
                 getViewModel.setI_value(6);
             }
         });
+        adm_users_Cardview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getViewModel.setI_value(7);
+            }
+        });
+
 
         return view;
     }

@@ -11,6 +11,7 @@ import com.example.adm.Classes.CheckPhoneNumber;
 import com.example.adm.Classes.MyLog;
 import com.example.adm.Classes.SessionList;
 import com.example.adm.Classes.SharedPreferences_data;
+import com.example.adm.Fragments.Control_Panel.AdminUsers.AdminUsersLists;
 import com.example.adm.Fragments.Control_Panel.HeaderFrags.Dish.DishList;
 import com.example.adm.Fragments.Control_Panel.Func.FuncList;
 import com.example.adm.Fragments.Control_Panel.HeaderFrags.Header.HeaderList;
@@ -166,6 +167,12 @@ public class GetViewModel extends AndroidViewModel {
     private String Admin_Primary;
     private MutableLiveData<String> Admin_PrimaryLiveData = new MutableLiveData<>();
 
+    //admin users list
+    private List<AdminUsersLists> adminUsersLists = new ArrayList<>();
+    private MutableLiveData<List<AdminUsersLists>> adminUsersListsMutableLiveData = new MutableLiveData<>();
+    private LinkedHashMap<String, List<AdminUsersLists>> adminUsersMap = new LinkedHashMap<>();
+    private MutableLiveData<LinkedHashMap<String, List<AdminUsersLists>>> adminUsersMapLiveDAta = new MutableLiveData<>();
+
     public GetViewModel(@NonNull Application application) {
         super(application);
         //firebase
@@ -183,6 +190,14 @@ public class GetViewModel extends AndroidViewModel {
     public void setAdmin_Primary(String admin_Primary) {
         Admin_Primary = admin_Primary;
         this.Admin_PrimaryLiveData.postValue(Admin_Primary);
+    }
+
+    public MutableLiveData<LinkedHashMap<String, List<AdminUsersLists>>> getAdminUsersMapLiveDAta() {
+        return adminUsersMapLiveDAta;
+    }
+
+    public MutableLiveData<List<AdminUsersLists>> getAdminUsersListsMutableLiveData() {
+        return adminUsersListsMutableLiveData;
     }
 
     public MutableLiveData<String> getAdmin_PrimaryLiveData() {
@@ -248,18 +263,34 @@ public class GetViewModel extends AndroidViewModel {
 
     private void CheckAdmDetails() {
         checkPhoneNumbers = new ArrayList<>();
+        adminUsersMapLiveDAta = new MutableLiveData<>();
         databaseReference = firebaseDatabase.getReference("Admin");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                MyLog.e(TAG, "snap>>" + snapshot);
+                MyLog.e(TAG, "admin>>snap>>" + snapshot);
+
                 for (DataSnapshot datas : snapshot.getChildren()) {
-                    MyLog.e(TAG, "error>>at firebase  emails " + datas.getKey());
+                    MyLog.e(TAG, "admin>>error>>at firebase  phone number " + datas.getKey());
                     String str = datas.getKey();
                     CheckPhoneNumber checkEmails1 = new CheckPhoneNumber(
                             str);
                     checkPhoneNumbers.add(checkEmails1);
+                    adminUsersLists = new ArrayList<>();
+                    MyLog.e(TAG, "admin>>snap>>email>>" + datas.child("email").getValue().toString());
+                    AdminUsersLists adminUsersLists1 = new AdminUsersLists();
+                    adminUsersLists1.setPhone_number(datas.child("phone_number").getValue().toString());
+                    adminUsersLists1.setEmail(datas.child("email").getValue().toString());
+                    adminUsersLists1.setUser_name(datas.child("username").getValue().toString());
+                    adminUsersLists.add(adminUsersLists1);
+
+
+                    adminUsersMap.put(str, adminUsersLists);
+
                 }
+
+                adminUsersMapLiveDAta.postValue(adminUsersMap);
+                MyLog.e(TAG, "adminUsersMap>>\n " + new GsonBuilder().setPrettyPrinting().create().toJson(adminUsersMap));
                 MyLog.e(TAG, "errors>>at firebase  emails out " + check_email);
                 checkPhoneNumberMutableLiveData.postValue(checkPhoneNumbers);
 

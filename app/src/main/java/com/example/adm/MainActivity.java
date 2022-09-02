@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.adm.Classes.MyLog;
+import com.example.adm.Fragments.Control_Panel.AdminUsers.AdminUsersFragment;
 import com.example.adm.Fragments.Control_Panel.Control_PanelFragment;
 import com.example.adm.Fragments.Control_Panel.HeaderFrags.Dish.DishFragment;
 import com.example.adm.Fragments.Control_Panel.HeaderFrags.Header.HeaderFragment;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         getViewModel.GetTokenKey();
 
-        refreshLayout=findViewById(R.id.refreshLayout);
+        refreshLayout = findViewById(R.id.refreshLayout);
 
         MyLog.e(TAG, "logout>> main activity ");
         //onclick swipe down
@@ -52,12 +53,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(Integer integer1) {
                 integer = integer1;
-                if(integer==0) {
+                if (integer == 0) {
                     finish();
                     startActivity(getIntent());
                     getViewModel.setI_value(integer);
                     MyLog.e(TAG, "maps>>itemArrayListMap set>");
-                    integer=1;
+                    integer = 1;
                 }
 
 
@@ -120,10 +121,15 @@ public class MainActivity extends AppCompatActivity {
 
                         fragmentTAg = "Control_PanelFragment";
                         break;
-                        case 6:
+                    case 6:
                         fragment = new PhoneNumberControlPanelFragment();
 
                         fragmentTAg = "PhoneNumberControlPanelFragment";
+                        break;
+                    case 7:
+                        fragment = new AdminUsersFragment();
+
+                        fragmentTAg = "AdminUsersFragment";
                         break;
                 }
                 fragmentTransaction.replace(R.id.Fragment, fragment);
@@ -144,9 +150,8 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().popBackStackImmediate();
             MyLog.e(TAG, "breadcrumbs>>onBackPressedAct:onBackPressed out:");
             String tag = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount() - 1).getName();
-            MyLog.e(TAG, "breadcrumbs>>onBackPressedAct:onBackPressed out:"+tag);
-            if(tag.equals("HomeFragment"))
-            {
+            MyLog.e(TAG, "breadcrumbs>>onBackPressedAct:onBackPressed out:" + tag);
+            if (tag.equals("HomeFragment")) {
                 getViewModel.setRefresh(0);
             }
         } else {

@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.example.adm.Classes.CheckPhoneNumber;
 import com.example.adm.Classes.MyLog;
 import com.example.adm.Classes.SharedPreferences_data;
+import com.example.adm.Fragments.Control_Panel.AdminUsers.AdapterAdminUsers;
 import com.example.adm.R;
 import com.example.adm.ViewModel.GetViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -59,9 +60,7 @@ public class PhoneNumberControlPanelFragment extends Fragment {
     private String mParam2;
 
 
-    private RecyclerView recyclerview_phone_number;
-    private List<CheckPhoneNumber> checkPhoneNumberList = new ArrayList<>();
-    private AdapterPhoneNumberControlPanel adapterPhoneNumberControlPanel;
+
 
     private LinearLayout primary_layout, edit_layout;
     private EditText phone_numberEdit;
@@ -264,25 +263,7 @@ public class PhoneNumberControlPanelFragment extends Fragment {
 
 
 
-       /* recyclerview_phone_number=view.findViewById(R.id.recyclerview_phone_number);
-        recyclerview_phone_number.setHasFixedSize(true);
-        recyclerview_phone_number.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
-
-        checkPhoneNumberList=new ArrayList<>();
-
-
-        //get phoneNumber
-        getViewModel.getCheckPhoneNumberMutableLiveData().observe(getViewLifecycleOwner(), new Observer<List<CheckPhoneNumber>>() {
-            @Override
-            public void onChanged(List<CheckPhoneNumber> checkPhoneNumbers1) {
-                checkPhoneNumberList=checkPhoneNumbers1;
-                adapterPhoneNumberControlPanel=new AdapterPhoneNumberControlPanel(getContext(),getViewModel,checkPhoneNumberList);
-                recyclerview_phone_number.setAdapter(adapterPhoneNumberControlPanel);
-
-
-            }
-        });*/
 
 
         back_btn.setOnClickListener(new View.OnClickListener() {
