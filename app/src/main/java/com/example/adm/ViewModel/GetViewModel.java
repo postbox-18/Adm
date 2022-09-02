@@ -11,10 +11,11 @@ import com.example.adm.Classes.CheckPhoneNumber;
 import com.example.adm.Classes.MyLog;
 import com.example.adm.Classes.SessionList;
 import com.example.adm.Classes.SharedPreferences_data;
-import com.example.adm.Fragments.Control_Panel.Dish.DishList;
+import com.example.adm.Fragments.Control_Panel.AdminUsers.AdminUsersLists;
+import com.example.adm.Fragments.Control_Panel.HeaderFrags.Dish.DishList;
 import com.example.adm.Fragments.Control_Panel.Func.FuncList;
-import com.example.adm.Fragments.Control_Panel.Header.HeaderList;
-import com.example.adm.Fragments.Control_Panel.Item.ItemArrayList;
+import com.example.adm.Fragments.Control_Panel.HeaderFrags.Header.HeaderList;
+import com.example.adm.Fragments.Control_Panel.HeaderFrags.Item.ItemArrayList;
 import com.example.adm.Fragments.Control_Panel.Func.UpdatedList;
 import com.example.adm.Fragments.Notification.NotifyList;
 import com.example.adm.Fragments.Orders.BottomSheet.Classes.OrderDishLists;
@@ -43,8 +44,8 @@ import java.util.Objects;
 public class GetViewModel extends AndroidViewModel {
     //check user login
     private MutableLiveData<Boolean> EmailMutable = new MutableLiveData<>();
-    private String email;
-    private boolean check_email = false;
+    private String phone_numberCheckData;
+    private boolean check_phone_numberData= false;
     //firebase database retrieve
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
@@ -162,22 +163,50 @@ public class GetViewModel extends AndroidViewModel {
     private List<NotifyList> notifyLists = new ArrayList<>();
     private MutableLiveData<List<NotifyList>> notifyListsMutableData = new MutableLiveData<>();
 
+    //Admin-Primary
+    private String Admin_Primary;
+    private MutableLiveData<String> Admin_PrimaryLiveData = new MutableLiveData<>();
+
+    //admin users list
+    private List<AdminUsersLists> adminUsersLists = new ArrayList<>();
+    private MutableLiveData<List<AdminUsersLists>> adminUsersListsMutableLiveData = new MutableLiveData<>();
+    private LinkedHashMap<String, List<AdminUsersLists>> adminUsersMap = new LinkedHashMap<>();
+    private MutableLiveData<LinkedHashMap<String, List<AdminUsersLists>>> adminUsersMapLiveDAta = new MutableLiveData<>();
+
     public GetViewModel(@NonNull Application application) {
         super(application);
         //firebase
         firebaseDatabase = FirebaseDatabase.getInstance();
-
+        GetAdmin_Primary();
         CheckAdmDetails();
         CheckUserDetails();
+
         //GetUserList();
 
     }
 
 
+    public void setAdmin_Primary(String admin_Primary) {
+        Admin_Primary = admin_Primary;
+        this.Admin_PrimaryLiveData.postValue(Admin_Primary);
+    }
+
+    public MutableLiveData<LinkedHashMap<String, List<AdminUsersLists>>> getAdminUsersMapLiveDAta() {
+        return adminUsersMapLiveDAta;
+    }
+
+    public MutableLiveData<List<AdminUsersLists>> getAdminUsersListsMutableLiveData() {
+        return adminUsersListsMutableLiveData;
+    }
+
+    public MutableLiveData<String> getAdmin_PrimaryLiveData() {
+        return Admin_PrimaryLiveData;
+    }
 
     public MutableLiveData<List<CheckPhoneNumber>> getCheckPhoneNumberMutableLiveData() {
         return checkPhoneNumberMutableLiveData;
     }
+
     public MutableLiveData<List<CheckPhoneNumber>> getCheckUserPhoneNumberMutableLiveData() {
         return checkUserPhoneNumberMutableLiveData;
     }
@@ -233,19 +262,44 @@ public class GetViewModel extends AndroidViewModel {
 
     private void CheckAdmDetails() {
         checkPhoneNumbers = new ArrayList<>();
+        adminUsersMapLiveDAta = new MutableLiveData<>();
         databaseReference = firebaseDatabase.getReference("Admin");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                MyLog.e(TAG, "snap>>" + snapshot);
+                MyLog.e(TAG, "admin>>snap>>" + snapshot);
+
                 for (DataSnapshot datas : snapshot.getChildren()) {
-                    MyLog.e(TAG, "error>>at firebase  emails " + datas.getKey());
-                    CheckPhoneNumber checkEmails1 = new CheckPhoneNumber(
-                            datas.getKey()
-                    );
-                    checkPhoneNumbers.add(checkEmails1);
+                    if (Admin_Primary.equals(datas.getKey())) {
+                        continue;
+                    }
+                    else
+                    {
+                        try {
+                            MyLog.e(TAG, "admin>>datas>>at firebase  phone number " + datas.getKey());
+                            String str = datas.getKey();
+                            CheckPhoneNumber checkEmails1 = new CheckPhoneNumber(
+                                    str);
+                            checkPhoneNumbers.add(checkEmails1);
+                            adminUsersLists = new ArrayList<>();
+                            MyLog.e(TAG, "admin>>snap>>email>>" + datas.child("email").getValue().toString());
+                            AdminUsersLists adminUsersLists1 = new AdminUsersLists();
+                            adminUsersLists1.setPhone_number(datas.child("phone_number").getValue().toString());
+                            adminUsersLists1.setEmail(datas.child("email").getValue().toString());
+                            adminUsersLists1.setPrimary(datas.child("primary").getValue().toString());
+                            adminUsersLists1.setUser_name(datas.child("username").getValue().toString());
+                            adminUsersLists.add(adminUsersLists1);
+                            adminUsersMap.put(str, adminUsersLists);
+                        } catch (Exception e) {
+                            MyLog.e(TAG, "admin>>error>>" + e.getMessage());
+                        }
+                    }
+
                 }
-                MyLog.e(TAG, "errors>>at firebase  emails out " + check_email);
+
+                adminUsersMapLiveDAta.postValue(adminUsersMap);
+                MyLog.e(TAG, "adminUsersMap>>\n " + new GsonBuilder().setPrettyPrinting().create().toJson(adminUsersMap));
+                MyLog.e(TAG, "errors>>at firebase  emails out " + check_phone_numberData);
                 checkPhoneNumberMutableLiveData.postValue(checkPhoneNumbers);
 
             }
@@ -267,11 +321,10 @@ public class GetViewModel extends AndroidViewModel {
                 for (DataSnapshot datas : snapshot.getChildren()) {
                     MyLog.e(TAG, "error>>at firebase  emails " + datas.getKey());
                     CheckPhoneNumber checkEmails1 = new CheckPhoneNumber(
-                            datas.getKey()
-                    );
+                            datas.getKey());
                     checkUserPhoneNumbers.add(checkEmails1);
                 }
-                MyLog.e(TAG, "errors>>at firebase  emails out " + check_email);
+                MyLog.e(TAG, "errors>>at firebase  emails out " + check_phone_numberData);
                 checkUserPhoneNumberMutableLiveData.postValue(checkUserPhoneNumbers);
 
             }
@@ -296,7 +349,6 @@ public class GetViewModel extends AndroidViewModel {
     /*public MutableLiveData<LinkedHashMap<String, List<SessionList>>> getSs_f_mapMutableLiveData() {
         return ss_f_mapMutableLiveData;
     }*/
-
 
 
     public void setOrderListsView(OrderLists orderListsView) {
@@ -356,6 +408,27 @@ public class GetViewModel extends AndroidViewModel {
 
     public MutableLiveData<List<ItemArrayList>> getItemListMutableLiveData() {
         return itemListMutableLiveData;
+    }
+
+    public void GetAdmin_Primary() {
+        databaseReference = firebaseDatabase.getReference("Admin-Primary");
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                MyLog.e(TAG, "Admin_Primary>>snap>>" + snapshot);
+                MyLog.e(TAG, "Admin_Primary>>snapshot>>" + snapshot.getValue().toString());
+                Admin_PrimaryLiveData.postValue(snapshot.getValue().toString());
+                Admin_Primary=snapshot.getValue().toString();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getApplication(), "Fail to get data.", Toast.LENGTH_SHORT).show();
+                MyLog.e(TAG, "list>>snap>>fun>>Fail to get data.");
+            }
+        });
     }
 
     public void GetUpdateItem() {
@@ -482,7 +555,8 @@ public class GetViewModel extends AndroidViewModel {
         return f_mapMutable;
     }*/
 
-    /*public void GetUserList() {
+    public void GetUserList() {
+        userLists = new ArrayList<>();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("Users-Id");
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -490,18 +564,18 @@ public class GetViewModel extends AndroidViewModel {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 MyLog.e(TAG, "snap>>" + snapshot);
 
-                    for (DataSnapshot datas : snapshot.getChildren()) {
-                        MyLog.e(TAG, "snap>>datasvalue>>" + datas.getValue());
-                        MyLog.e(TAG, "snap>>dataskey>>" + datas.getKey());
-                        MyLog.e(TAG, "snap>>usernamen>>" + datas.child("username").getValue().toString());
-                        MyLog.e(TAG, "snap>>email>." + datas.child("email").getValue().toString());
-                        MyLog.e(TAG, "snap>>phone>>" + datas.child("phone_number").getValue().toString());
-                        UserDetailsList userList = new UserDetailsList(
-                                datas.child("username").getValue().toString(),
-                                datas.child("email").getValue().toString(),
-                                datas.child("phone_number").getValue().toString()
-                        );
-                        userLists.add(userList);
+                for (DataSnapshot datas : snapshot.getChildren()) {
+                    MyLog.e(TAG, "snap>>datasvalue>>" + datas.getValue());
+                    MyLog.e(TAG, "snap>>dataskey>>" + datas.getKey());
+                    MyLog.e(TAG, "snap>>usernamen>>" + datas.child("username").getValue().toString());
+                    MyLog.e(TAG, "snap>>email>." + datas.child("email").getValue().toString());
+                    MyLog.e(TAG, "snap>>phone>>" + datas.child("phone_number").getValue().toString());
+                    UserDetailsList userList = new UserDetailsList(
+                            datas.child("username").getValue().toString(),
+                            datas.child("email").getValue().toString(),
+                            datas.child("phone_number").getValue().toString()
+                    );
+                    userLists.add(userList);
 
                 }
                 UserListMutable.postValue(userLists);
@@ -512,7 +586,7 @@ public class GetViewModel extends AndroidViewModel {
                 Toast.makeText(getApplication(), "Fail to get data.", Toast.LENGTH_SHORT).show();
             }
         });
-    }*/
+    }
 
 
     public void GetOrdesList() {
@@ -639,9 +713,9 @@ public class GetViewModel extends AndroidViewModel {
         return header_title_Mutable;
     }
 
-    public void setEmail(String email) {
-        GetUserDeatils(email);
-        this.email = email;
+    public void setPhone_numberCheckData(String phone_numberCheckData) {
+        GetAdminLoginDeatils(phone_numberCheckData);
+        this.phone_numberCheckData = phone_numberCheckData;
 
     }
 
@@ -650,7 +724,7 @@ public class GetViewModel extends AndroidViewModel {
     }
 
 
-    public boolean GetUserDeatils(String email) {
+    public void GetAdminLoginDeatils(String phone_numberCheckData) {
 
         databaseReference = firebaseDatabase.getReference("Admin");
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -659,13 +733,14 @@ public class GetViewModel extends AndroidViewModel {
                 // MyLog.e(TAG, "snap>>" + snapshot);
                 for (DataSnapshot datas : snapshot.getChildren()) {
                     MyLog.e(TAG, "error>>at firebase  emails " + datas.child("email").getValue().toString());
-                    if (Objects.equals(email, datas.child("email").getValue().toString())) {
+                    if ((phone_numberCheckData).equals( datas.child("phone_number").getValue().toString())) {
                         new SharedPreferences_data(getApplication()).setS_email(datas.child("email").getValue().toString());
                         new SharedPreferences_data(getApplication()).setS_user_name(datas.child("username").getValue().toString());
                         new SharedPreferences_data(getApplication()).setS_phone_number(datas.child("phone_number").getValue().toString());
-                        check_email = true;
-                        EmailMutable.postValue(check_email);
-                        MyLog.e(TAG, "boolean>>at firebase  emails " + check_email);
+                        new SharedPreferences_data(getApplication()).setPrimaryCheck(datas.child("primary").getValue().toString());
+                        check_phone_numberData = true;
+                        EmailMutable.postValue(check_phone_numberData);
+                        MyLog.e(TAG, "boolean>>at firebase  emails " + check_phone_numberData);
                         break;
                     } else {
                         continue;
@@ -683,8 +758,7 @@ public class GetViewModel extends AndroidViewModel {
                 Toast.makeText(getApplication(), "Fail to get data.", Toast.LENGTH_SHORT).show();
             }
         });
-        MyLog.e(TAG, "boolean>>at return " + check_email);
-        return check_email;
+        MyLog.e(TAG, "boolean>>at return " + check_phone_numberData);
     }
 
     public void getfunFragment(String fun) {
@@ -819,24 +893,23 @@ public class GetViewModel extends AndroidViewModel {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 notifyLists = new ArrayList<>();
                 for (DataSnapshot datas : snapshot.getChildren()) {
-                    String key=datas.getKey().toString();
+                    String key = datas.getKey().toString();
                     for (DataSnapshot snapshot1 : datas.getChildren()) {
                         MyLog.e(TAG, "notify>>key>>" + snapshot1.getKey().toString());
                         MyLog.e(TAG, "notify>>value>>" + snapshot1.getValue().toString());
 
 
-
                         /////////////*******CLEAR EXPIRED DATE**************////////////////////////////
                         //clear date list
-                        String gn_Date=snapshot1.getKey().toString();
-                        Date date1=new Date();
-                        Date date2=new Date();
+                        String gn_Date = snapshot1.getKey().toString();
+                        Date date1 = new Date();
+                        Date date2 = new Date();
                         Date date = new Date();
 
                         SimpleDateFormat dates = new SimpleDateFormat("dd/MM/yyyy");
                         String current_Date = dates.format(date);
-                        gn_Date=gn_Date.replace("-","/");
-                        MyLog.e(TAG,"notifyDates>>GN>>"+gn_Date+">>Cure>>"+current_Date);
+                        gn_Date = gn_Date.replace("-", "/");
+                        MyLog.e(TAG, "notifyDates>>GN>>" + gn_Date + ">>Cure>>" + current_Date);
 
                         //Setting dates
                         try {
@@ -851,35 +924,31 @@ public class GetViewModel extends AndroidViewModel {
                         }
                         //MyLog.e(TAG,"dates>>diff>>"+date2.before(date1));
 
-                        if(date2.before(date1))
-                        {
+                        if (date2.before(date1)) {
                             //Comparing dates
                             long difference = Math.abs(date1.getTime() - date2.getTime());
                             long differenceDates = difference / (24 * 60 * 60 * 1000);
 
                             //Convert long to String
                             String dayDifference = Long.toString(differenceDates);
-                            MyLog.e(TAG,"notifyDates>>differ>>"+dayDifference);
-                            gn_Date=gn_Date.replace("/","-");
-                            int n=Integer.parseInt(dayDifference);
-                            MyLog.e(TAG,"notifyDates>>delete>>"+n);
-                            if(n>=7) {
+                            MyLog.e(TAG, "notifyDates>>differ>>" + dayDifference);
+                            gn_Date = gn_Date.replace("/", "-");
+                            int n = Integer.parseInt(dayDifference);
+                            MyLog.e(TAG, "notifyDates>>delete>>" + n);
+                            if (n >= 7) {
                                 //remove expiry date
                                 firebaseDatabase = FirebaseDatabase.getInstance();
                                 databaseReference = firebaseDatabase.getReference("Notifications");
-                                MyLog.e(TAG,"notifyDates>>\nkey>>"+key+"\t==\tgn_date>>"+gn_Date);
+                                MyLog.e(TAG, "notifyDates>>\nkey>>" + key + "\t==\tgn_date>>" + gn_Date);
                                 databaseReference.child(key).child(gn_Date).removeValue();
                             }
 
-                        }
-                        else
-                        {
+                        } else {
 
                         }
 
 
                         /////////////***********END END CLEAR EXPIRED DATE END END**********////////////////////////////
-
 
 
                         NotifyList list = new NotifyList(
@@ -906,16 +975,73 @@ public class GetViewModel extends AndroidViewModel {
                     @Override
                     public void onComplete(@NonNull Task<String> task) {
                         if (!task.isSuccessful()) {
-                            MyLog.e(TAG, "task>>error>>"+task.getException());
+                            MyLog.e(TAG, "task>>error>>" + task.getException());
                             return;
                         }
                         String token = task.getResult();
 
                         // Log and toast
                         String msg = getApplication().getString(R.string.fcm_token, token);
-                        MyLog.e(TAG, "task>>"+msg);
+                        MyLog.e(TAG, "task>>" + msg);
+
+                        databaseReference = firebaseDatabase.getReference("Token");
+                        databaseReference.child("Receiver").setValue(token);
+
                     }
                 });
     }
+
+    public void SetAdmin_primary(String phone_numberEdit) {
+        databaseReference = firebaseDatabase.getReference("Admin-Primary");
+
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                MyLog.e(TAG, "Admin_Primary>>snap>>" + snapshot);
+                MyLog.e(TAG, "Admin_Primary>>snapshot>>" + snapshot.getValue().toString());
+                databaseReference.setValue(phone_numberEdit);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getApplication(), "Fail to get data.", Toast.LENGTH_SHORT).show();
+                MyLog.e(TAG, "list>>snap>>fun>>Fail to get data.");
+            }
+        });
+    }
+
+    public void UpdatedMasterAdminAccess(String phone_number, AdminUsersLists detailsList, boolean b) {
+
+
+        //remove data
+        FirebaseDatabase firebaseDatabase1 = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference1 = firebaseDatabase1.getReference("Admin");
+        databaseReference1.child(phone_number).removeValue();
+
+        //add data
+        databaseReference = firebaseDatabase.getReference("Admin");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                MyLog.e(TAG, "Admin_Primary>>snap>>" + snapshot);
+                MyLog.e(TAG, "Admin_Primary>>snapshot>>" + snapshot.getValue().toString());
+                databaseReference.child(phone_number).child("email").setValue(detailsList.getEmail());
+                databaseReference.child(phone_number).child("phone_number").setValue(detailsList.getPhone_number());
+                databaseReference.child(phone_number).child("primary").setValue(b);
+                databaseReference.child(phone_number).child("username").setValue(detailsList.getUser_name());
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getApplication(), "Fail to get data.", Toast.LENGTH_SHORT).show();
+                MyLog.e(TAG, "list>>snap>>fun>>Fail to get data.");
+            }
+        });
+
+    }
+
+
 }
 

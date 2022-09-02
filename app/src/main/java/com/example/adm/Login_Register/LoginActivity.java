@@ -207,8 +207,7 @@ public class LoginActivity extends AppCompatActivity {
                     send_otp.setVisibility(View.GONE);
                     otp.setVisibility(View.VISIBLE);
 
-                }
-                else {
+                } else {
 
                     //alert dialog
                     AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
@@ -232,7 +231,7 @@ public class LoginActivity extends AppCompatActivity {
                 getViewModel.getCheckPhoneNumberMutableLiveData().observe(LoginActivity.this, new Observer<List<CheckPhoneNumber>>() {
                     @Override
                     public void onChanged(List<CheckPhoneNumber> checkPhoneNumbers1) {
-                        checkPhoneNumbers=new ArrayList<>();
+                        checkPhoneNumbers = new ArrayList<>();
                         checkPhoneNumbers = checkPhoneNumbers1;
                         for (int i = 0; i < checkPhoneNumbers1.size(); i++) {
                             if (phoneNumber.equals(checkPhoneNumbers1.get(i).getPhone_number())) {
@@ -263,13 +262,16 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 loadingDialog.show(getSupportFragmentManager(), "Loading dailog");
+
                 if (verifyOTP) {
                     login();
+                    getViewModel.GetAdminLoginDeatils(phone_number.getText().toString());
                 } else {
                     loadingDialog.dismiss();
                     Toast.makeText(LoginActivity.this, "Please Try Again", Toast.LENGTH_SHORT).show();
                 }
             }
+
         });
 
 
@@ -367,6 +369,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }
+
     private void beginRecovery(String email) {
 
         loadingDialog.show(getSupportFragmentManager(), "Loading dailog");
@@ -378,21 +381,19 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 loadingDialog.dismiss();
-                if(task.isSuccessful())
-                {
+                if (task.isSuccessful()) {
                     // if isSuccessful then done message will be shown
                     // and you can change the password
-                    Toast.makeText(LoginActivity.this,"Done sent",Toast.LENGTH_LONG).show();
-                }
-                else {
-                    Toast.makeText(LoginActivity.this,"Error Occurred",Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, "Done sent", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(LoginActivity.this, "Error Occurred", Toast.LENGTH_LONG).show();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 loadingDialog.dismiss();
-                Toast.makeText(LoginActivity.this,"Error Failed",Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, "Error Failed", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -551,6 +552,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         }, 5000);
     }
+
     //OTP
     private void sendVerificationCode(String number) {
         // this method is used for getting

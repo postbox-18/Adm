@@ -43,6 +43,7 @@ public class ProfileFragment extends Fragment {
     private TextView user_name,email;
     private CardView log_out,control_panel_card;
     private ImageView back_btn;
+    private String primary;
 
     private GetViewModel getViewModel;
     public ProfileFragment() {
@@ -95,6 +96,16 @@ public class ProfileFragment extends Fragment {
         user_name.setText(new SharedPreferences_data(getContext()).getS_user_name());
         email.setText(new SharedPreferences_data(getContext()).getS_email());
 
+        primary=new SharedPreferences_data(getContext()).getPrimaryCheck();
+        if (primary.equals("true"))
+        {
+            control_panel_card.setVisibility(View.VISIBLE);
+        }
+        else  if (primary.equals("false"))
+        {
+            control_panel_card.setVisibility(View.GONE);
+
+        }
         //onclick
         log_out.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,7 +130,7 @@ public class ProfileFragment extends Fragment {
         control_panel_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               getViewModel.setI_value(1);
+               getViewModel.setI_value(5);
             }
         });
 
