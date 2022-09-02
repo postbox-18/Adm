@@ -351,6 +351,7 @@ public class RegisterActivity extends AppCompatActivity {
                         databaseReference.child(s_phone_number).child("email").setValue(s_email);
                         databaseReference.child(s_phone_number).child("phone_number").setValue(s_phone_number);
                         databaseReference.child(s_phone_number).child("username").setValue(s_user_name);
+                        databaseReference.child(s_phone_number).child("primary").setValue("false");
 
                         new SharedPreferences_data(RegisterActivity.this).setS_user_name(s_user_name);
                         new SharedPreferences_data(RegisterActivity.this).setS_phone_number(s_phone_number);

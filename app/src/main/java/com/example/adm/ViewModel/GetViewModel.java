@@ -44,8 +44,8 @@ import java.util.Objects;
 public class GetViewModel extends AndroidViewModel {
     //check user login
     private MutableLiveData<Boolean> EmailMutable = new MutableLiveData<>();
-    private String email;
-    private boolean check_email = false;
+    private String phone_numberCheckData;
+    private boolean check_phone_numberData= false;
     //firebase database retrieve
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
@@ -299,7 +299,7 @@ public class GetViewModel extends AndroidViewModel {
 
                 adminUsersMapLiveDAta.postValue(adminUsersMap);
                 MyLog.e(TAG, "adminUsersMap>>\n " + new GsonBuilder().setPrettyPrinting().create().toJson(adminUsersMap));
-                MyLog.e(TAG, "errors>>at firebase  emails out " + check_email);
+                MyLog.e(TAG, "errors>>at firebase  emails out " + check_phone_numberData);
                 checkPhoneNumberMutableLiveData.postValue(checkPhoneNumbers);
 
             }
@@ -324,7 +324,7 @@ public class GetViewModel extends AndroidViewModel {
                             datas.getKey());
                     checkUserPhoneNumbers.add(checkEmails1);
                 }
-                MyLog.e(TAG, "errors>>at firebase  emails out " + check_email);
+                MyLog.e(TAG, "errors>>at firebase  emails out " + check_phone_numberData);
                 checkUserPhoneNumberMutableLiveData.postValue(checkUserPhoneNumbers);
 
             }
@@ -713,9 +713,9 @@ public class GetViewModel extends AndroidViewModel {
         return header_title_Mutable;
     }
 
-    public void setEmail(String email) {
-        GetUserDeatils(email);
-        this.email = email;
+    public void setPhone_numberCheckData(String phone_numberCheckData) {
+        GetAdminLoginDeatils(phone_numberCheckData);
+        this.phone_numberCheckData = phone_numberCheckData;
 
     }
 
@@ -724,7 +724,7 @@ public class GetViewModel extends AndroidViewModel {
     }
 
 
-    public boolean GetUserDeatils(String email) {
+    public void GetAdminLoginDeatils(String phone_numberCheckData) {
 
         databaseReference = firebaseDatabase.getReference("Admin");
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -733,13 +733,14 @@ public class GetViewModel extends AndroidViewModel {
                 // MyLog.e(TAG, "snap>>" + snapshot);
                 for (DataSnapshot datas : snapshot.getChildren()) {
                     MyLog.e(TAG, "error>>at firebase  emails " + datas.child("email").getValue().toString());
-                    if (Objects.equals(email, datas.child("email").getValue().toString())) {
+                    if ((phone_numberCheckData).equals( datas.child("phone_number").getValue().toString())) {
                         new SharedPreferences_data(getApplication()).setS_email(datas.child("email").getValue().toString());
                         new SharedPreferences_data(getApplication()).setS_user_name(datas.child("username").getValue().toString());
                         new SharedPreferences_data(getApplication()).setS_phone_number(datas.child("phone_number").getValue().toString());
-                        check_email = true;
-                        EmailMutable.postValue(check_email);
-                        MyLog.e(TAG, "boolean>>at firebase  emails " + check_email);
+                        new SharedPreferences_data(getApplication()).setPrimaryCheck(datas.child("primary").getValue().toString());
+                        check_phone_numberData = true;
+                        EmailMutable.postValue(check_phone_numberData);
+                        MyLog.e(TAG, "boolean>>at firebase  emails " + check_phone_numberData);
                         break;
                     } else {
                         continue;
@@ -757,8 +758,7 @@ public class GetViewModel extends AndroidViewModel {
                 Toast.makeText(getApplication(), "Fail to get data.", Toast.LENGTH_SHORT).show();
             }
         });
-        MyLog.e(TAG, "boolean>>at return " + check_email);
-        return check_email;
+        MyLog.e(TAG, "boolean>>at return " + check_phone_numberData);
     }
 
     public void getfunFragment(String fun) {

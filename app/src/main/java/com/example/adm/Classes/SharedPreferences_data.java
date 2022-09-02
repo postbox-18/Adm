@@ -11,6 +11,7 @@ public class SharedPreferences_data {
     private static final String s_password="s_password";
     private static final String enter_password="enter_password";
     private static final String boolen_check="boolen_check";
+    private static final String primaryCheck="false";
 
     private static final String s_email="s_email";
     public SharedPreferences_data(Context context) {
@@ -58,6 +59,17 @@ public class SharedPreferences_data {
     public static void setEditor(SharedPreferences.Editor editor) {
         SharedPreferences_data.editor = editor;
     }
+    public void setPrimaryCheck(String primaryCheck1){
+        sharedPreferences.edit().putString(primaryCheck, primaryCheck1).commit();
+
+    }
+    public static String getPrimaryCheck() {
+        return sharedPreferences.getString(primaryCheck, null);
+    }
+
+
+
+
     public void setS_user_name(String user_name){
         sharedPreferences.edit().putString(s_user_name, user_name).commit();
 
@@ -69,6 +81,9 @@ public class SharedPreferences_data {
         sharedPreferences.edit().putString(s_phone_number, phone_number).commit();
 
     }
+
+
+
     public static String getS_phone_number() {
         return sharedPreferences.getString(s_phone_number, null);
     }
