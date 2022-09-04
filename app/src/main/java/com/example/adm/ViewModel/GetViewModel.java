@@ -1015,30 +1015,14 @@ public class GetViewModel extends AndroidViewModel {
 
 
         //remove data
-        FirebaseDatabase firebaseDatabase1 = FirebaseDatabase.getInstance();
+       /* FirebaseDatabase firebaseDatabase1 = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference1 = firebaseDatabase1.getReference("Admin");
-        databaseReference1.child(phone_number).removeValue();
+        databaseReference1.child(phone_number).removeValue();*/
 
         //add data
         databaseReference = firebaseDatabase.getReference("Admin");
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                MyLog.e(TAG, "Admin_Primary>>snap>>" + snapshot);
-                MyLog.e(TAG, "Admin_Primary>>snapshot>>" + snapshot.getValue().toString());
-                databaseReference.child(phone_number).child("email").setValue(detailsList.getEmail());
-                databaseReference.child(phone_number).child("phone_number").setValue(detailsList.getPhone_number());
-                databaseReference.child(phone_number).child("primary").setValue(b);
-                databaseReference.child(phone_number).child("username").setValue(detailsList.getUser_name());
+        databaseReference.child(phone_number).child("primary").setValue(b);
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getApplication(), "Fail to get data.", Toast.LENGTH_SHORT).show();
-                MyLog.e(TAG, "list>>snap>>fun>>Fail to get data.");
-            }
-        });
 
     }
 
