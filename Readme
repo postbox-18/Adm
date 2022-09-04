@@ -13,11 +13,8 @@ PENDING
 8-highlight unread notify msg
 10-count in notify tab
 11-control panel add biometrics
-12-control panel to change head admin to send opt to new register in ADM.
-15-only header adm only have control panel for phone number to send admin
-19-bugs in adding data twice
-20-only "Admin" primary=true have control panel visible.
-21-
+21-click on notify msg to view details.
+22-
 
 SOLVED
 1-Control Panel update header and also change in database which have data
@@ -38,10 +35,14 @@ SOLVED
 6-Show orders username in one cardview into func(NO NEED)
 7-delete when expired date order in notify fragment
 9-tap to view the orders(NO NEED)
+12-control panel to change head admin to send opt to new register in ADM.
 13-Admin data can't in "Users-Id" and also in "Users-Id" data can't have in "Admin" in Both Register and Login.
 14-store token in database to reciver adm token.
+15-only header adm only have control panel for phone number to send admin
 17-admin users list in control panel have rights for master admin
 18-ADDED FIRE CRASH ANALYSIS.
+19-bugs in adding data twice
+20-only "Admin" primary=true have control panel visible.
 
 
 FAILED
