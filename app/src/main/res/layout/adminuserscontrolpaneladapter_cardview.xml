@@ -22,7 +22,8 @@
                 android:orientation="horizontal">
                 <ImageView
                     android:id="@+id/profile"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.2"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_chef"/>
                 <LinearLayout
@@ -52,10 +53,19 @@
                 </LinearLayout>
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/switchView"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.2"
+                    android:layout_gravity="center"
                     android:outlineAmbientShadowColor="@color/colorSecondary"
                     android:outlineSpotShadowColor="@color/colorSecondary"
                     android:layout_height="wrap_content"/>
+                <ImageView
+                    android:id="@+id/deleteAdminId"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.2"
+                    android:layout_gravity="center"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_trash3"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

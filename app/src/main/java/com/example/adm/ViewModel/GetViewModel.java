@@ -45,7 +45,7 @@ public class GetViewModel extends AndroidViewModel {
     //check user login
     private MutableLiveData<Boolean> EmailMutable = new MutableLiveData<>();
     private String phone_numberCheckData;
-    private boolean check_phone_numberData= false;
+    private boolean check_phone_numberData = false;
     //firebase database retrieve
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference databaseReference;
@@ -272,9 +272,7 @@ public class GetViewModel extends AndroidViewModel {
                 for (DataSnapshot datas : snapshot.getChildren()) {
                     if (Admin_Primary.equals(datas.getKey())) {
                         continue;
-                    }
-                    else
-                    {
+                    } else {
                         try {
                             MyLog.e(TAG, "admin>>datas>>at firebase  phone number " + datas.getKey());
                             String str = datas.getKey();
@@ -419,7 +417,7 @@ public class GetViewModel extends AndroidViewModel {
                 MyLog.e(TAG, "Admin_Primary>>snap>>" + snapshot);
                 MyLog.e(TAG, "Admin_Primary>>snapshot>>" + snapshot.getValue().toString());
                 Admin_PrimaryLiveData.postValue(snapshot.getValue().toString());
-                Admin_Primary=snapshot.getValue().toString();
+                Admin_Primary = snapshot.getValue().toString();
 
             }
 
@@ -733,7 +731,7 @@ public class GetViewModel extends AndroidViewModel {
                 // MyLog.e(TAG, "snap>>" + snapshot);
                 for (DataSnapshot datas : snapshot.getChildren()) {
                     MyLog.e(TAG, "error>>at firebase  emails " + datas.child("email").getValue().toString());
-                    if ((phone_numberCheckData).equals( datas.child("phone_number").getValue().toString())) {
+                    if ((phone_numberCheckData).equals(datas.child("phone_number").getValue().toString())) {
                         new SharedPreferences_data(getApplication()).setS_email(datas.child("email").getValue().toString());
                         new SharedPreferences_data(getApplication()).setS_user_name(datas.child("username").getValue().toString());
                         new SharedPreferences_data(getApplication()).setS_phone_number(datas.child("phone_number").getValue().toString());
@@ -1011,34 +1009,20 @@ public class GetViewModel extends AndroidViewModel {
         });
     }
 
-    public void UpdatedMasterAdminAccess(String phone_number, AdminUsersLists detailsList, boolean b) {
+    public void UpdatedMasterAdminAccess(String phone_number, AdminUsersLists detailsList, boolean b, int n) {
 
 
-        //remove data
-        FirebaseDatabase firebaseDatabase1 = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference1 = firebaseDatabase1.getReference("Admin");
-        databaseReference1.child(phone_number).removeValue();
+        if (n == 2) {
+            //remove data
+            FirebaseDatabase firebaseDatabase1 = FirebaseDatabase.getInstance();
+            DatabaseReference databaseReference1 = firebaseDatabase1.getReference("Admin");
+            databaseReference1.child(phone_number).removeValue();
+        } else if (n == 1) {
+            //add data
+            databaseReference = firebaseDatabase.getReference("Admin");
+            databaseReference.child(phone_number).child("primary").setValue(b);
+        }
 
-        //add data
-        databaseReference = firebaseDatabase.getReference("Admin");
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                MyLog.e(TAG, "Admin_Primary>>snap>>" + snapshot);
-                MyLog.e(TAG, "Admin_Primary>>snapshot>>" + snapshot.getValue().toString());
-                databaseReference.child(phone_number).child("email").setValue(detailsList.getEmail());
-                databaseReference.child(phone_number).child("phone_number").setValue(detailsList.getPhone_number());
-                databaseReference.child(phone_number).child("primary").setValue(b);
-                databaseReference.child(phone_number).child("username").setValue(detailsList.getUser_name());
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getApplication(), "Fail to get data.", Toast.LENGTH_SHORT).show();
-                MyLog.e(TAG, "list>>snap>>fun>>Fail to get data.");
-            }
-        });
 
     }
 

@@ -1,0 +1,161 @@
+{
+  "Admin": {
+    "8637413932": {
+      "email": "post18@gmail.com",
+      "phone_number": "8637413932",
+      "primary": true,
+      "username": "post18"
+    },
+    "9360629606": {
+      "email": "sureshaosta@gmail.com",
+      "phone_number": "9360629606",
+      "primary": false,
+      "username": "suresh"
+    },
+    "9942474264": {
+      "email": "post18@gmail.com",
+      "phone_number": "9942474264",
+      "primary": true,
+      "username": "post18"
+    }
+  },
+  "Admin-Primary": 9942474264,
+  "Items": {
+    "Selected&UnSelected": {
+      "Category": [
+        "Non-Veg",
+        "Veg",
+        "Dessert"
+      ],
+      "Function": {
+        "1": "Wedding",
+        "2": "Birthday Party",
+        "3": "Temple Function",
+        "7": "Others",
+        "4:": "House Warming",
+        "5:": "Corporate Events",
+        "6:": "Outdoor Catering"
+      },
+      "Img": {
+        "Function": {
+          "Birthday Party": "https://firebasestorage.googleapis.com/v0/b/speedy-actor-294117.appspot.com/o/birthday.png?alt=media&token=a3eacd7d-8ef8-4fb6-bdf7-c33fd4c07451",
+          "Corporate Events": "https://firebasestorage.googleapis.com/v0/b/speedy-actor-294117.appspot.com/o/corp.png?alt=media&token=5951cec1-39c0-484e-ad72-249c616fe493",
+          "House Warming": "https://firebasestorage.googleapis.com/v0/b/speedy-actor-294117.appspot.com/o/house.png?alt=media&token=90d47864-404a-4518-97e7-e98f8f7daf32",
+          "Wedding": "https://firebasestorage.googleapis.com/v0/b/speedy-actor-294117.appspot.com/o/wedding.png?alt=media&token=1b10dcd9-7577-4135-9d47-24459282849b"
+        }
+      },
+      "List": {
+        "Dessert": {
+          "Cakes_false": {
+            "Black forest Ice cake": "true",
+            "Coconut cake": "true",
+            "Walnut cake": "true"
+          },
+          "Ice Creams_true": {
+            "Coffee Candy": false,
+            "black current": true,
+            "butter scotch": false,
+            "chocolate": true
+          },
+          "Juice_true": {
+            "Black Current": true,
+            "Blue Berry": true,
+            "Grape": true,
+            "Orange": false
+          }
+        },
+        "Non-Veg": {
+          "Chiken_true": {
+            "Chilli": "true",
+            "Kerala Chicken Roast": "true",
+            "Masaledar Chicken Lollipop": "true",
+            "Murg Malaiwala": "false"
+          },
+          "Fish_true": {
+            "King Salmon Strips": true,
+            "Southern Fried Crappie": false,
+            "chilli": true
+          },
+          "Mutton_true": {
+            "Andhra Gongura Mamsam": true,
+            "Biryani": true,
+            "Mutton Korma": true,
+            "Mutton Kuzhambu": false,
+            "Nalli": false
+          }
+        },
+        "Veg": {
+          "Biryani_true": {
+            "Mushroom": true,
+            "Veg": false
+          },
+          "Tiffun_false": {
+            "Dosa": true,
+            "Idle": "false",
+            "Pongal": "true"
+          },
+          "Variety Rice _true": {
+            "Lemon Rice": "true"
+          }
+        }
+      },
+      "Session": [
+        "Breakfast",
+        "Lunch",
+        "Dinner"
+      ],
+      "SessionTime": {
+        "Breakfast": "06:00 AM-11:00 AM",
+        "Dinner": "05:00 PM-10:00 PM",
+        "Lunch": "12:00 PM-04:00 PM"
+      }
+    }
+  },
+  "Notifications": {
+    "-NAi3M9bQruVOD5MLaNE": {
+      "30-8-2022": "Orders Placed by email  (contact number: 8973396270) and Function is Wedding session is Breakfast at 30-8-2022 Time is 08:43 AM Total Count is 66"
+    },
+    "-NB6GJv4ZjPGzNgKE9ck": {
+      "30-9-2022": "Orders Placed by aravinthc  (contact number: 8973396270) and Function is Birthday Party session is Lunch at 30-9-2022 Time is 12:21 PM Total Count is 528"
+    },
+    "-NB6GxPiixMC3q9xbTPA": {
+      "30-9-2022": "Items Modified by aravinthc  (contact number: 8973396270) and Function is Birthday Party session is Lunch at 30-9-2022 Time is 12:21 PM Total Count is 528"
+    },
+    "-NB6HII3FQOVJhXMb3Rg": {
+      "30-9-2022": "Items Modified by aravinthc  (contact number: 8973396270) and Function is Birthday Party session is Lunch at 30-9-2022 Time is 12:21 PM Total Count is 528"
+    },
+    "-NB6HKxklDr3G1zfAoZD": {
+      "30-9-2022": "Items Modified by aravinthc  (contact number: 8973396270) and Function is Birthday Party session is Lunch at 30-9-2022 Time is 12:21 PM Total Count is 528"
+    }
+  },
+  "Orders": {
+    "8973396270": {
+      "Birthday Party": {
+        "30-9-2022": {
+          "Lunch!12:21 PM-528_true": {
+            "Non-Veg": {
+              "Chiken_true": [
+                "Kerala Chicken Roast",
+                "Masaledar Chicken Lollipop"
+              ],
+              "Fish_true": [
+                "King Salmon Strips",
+                "chilli"
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "Token": {
+    "Receiver": "fqwyWemaTiSMJ4OURSx_Mg:APA91bFtdJjLDfmaza0CcU4OkyJGYj9HVW0y46q-Ke9HQ6nuLoKYUicMHc9xNRsvVbz6CIhSW3YKRuohwm5ORi9k-HehqHkJFJq9BT5H6WXbH8NTWtCpmC3vANMC8RW9dGEMn7Hv8Nug"
+  },
+  "Users-Id": {
+    "8973396270": {
+      "email": "aravinth@gmail.com",
+      "phone_number": "8973396270",
+      "username": "aravinthc "
+    }
+  }
+}

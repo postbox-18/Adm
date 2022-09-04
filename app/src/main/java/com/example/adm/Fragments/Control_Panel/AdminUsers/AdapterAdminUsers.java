@@ -73,6 +73,13 @@ public class AdapterAdminUsers extends RecyclerView.Adapter<AdapterAdminUsers.Vi
             holder.switchView.setChecked(false);
         }
 
+        holder.deleteAdminId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getViewModel.UpdatedMasterAdminAccess(phone_number,detailsList,false,2);
+
+            }
+        });
 
         holder.switchView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -90,7 +97,7 @@ public class AdapterAdminUsers extends RecyclerView.Adapter<AdapterAdminUsers.Vi
                 MyLog.e(TAG,"updatedSwitch>>AdminUsers>>"+new GsonBuilder().setPrettyPrinting().create().toJson(adminUsersLists));
                 MyLog.e(TAG,"updatedSwitch>>adminUsersMap>>"+new GsonBuilder().setPrettyPrinting().create().toJson(adminUsersMap));
 
-                getViewModel.UpdatedMasterAdminAccess(phone_number,detailsList,b);
+                getViewModel.UpdatedMasterAdminAccess(phone_number,detailsList,b,1);
 
 
             }
@@ -108,6 +115,8 @@ public class AdapterAdminUsers extends RecyclerView.Adapter<AdapterAdminUsers.Vi
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView profile;
+        private ImageView deleteAdminId;
+
         private SwitchCompat switchView;
         private TextView user_name, email, phone_number;
 
@@ -118,6 +127,8 @@ public class AdapterAdminUsers extends RecyclerView.Adapter<AdapterAdminUsers.Vi
             email = view.findViewById(R.id.email);
             phone_number = view.findViewById(R.id.phone_number);
             switchView = view.findViewById(R.id.switchView);
+            deleteAdminId=view.findViewById(R.id.deleteAdminId);
+
 
 
         }
