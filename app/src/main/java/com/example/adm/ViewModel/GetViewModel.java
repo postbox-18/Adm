@@ -161,6 +161,9 @@ public class GetViewModel extends AndroidViewModel {
     //notify
     private List<NotifyList> notifyLists = new ArrayList<>();
     private MutableLiveData<List<NotifyList>> notifyListsMutableData = new MutableLiveData<>();
+    //set selected notify list
+    private NotifyList notifyarray=new NotifyList();
+    private MutableLiveData<NotifyList> notifyarrayLiveData=new MutableLiveData<>();
 
     //Admin-Primary
     private String Admin_Primary;
@@ -171,6 +174,8 @@ public class GetViewModel extends AndroidViewModel {
     private MutableLiveData<List<AdminUsersLists>> adminUsersListsMutableLiveData = new MutableLiveData<>();
     private LinkedHashMap<String, List<AdminUsersLists>> adminUsersMap = new LinkedHashMap<>();
     private MutableLiveData<LinkedHashMap<String, List<AdminUsersLists>>> adminUsersMapLiveDAta = new MutableLiveData<>();
+
+
 
     public GetViewModel(@NonNull Application application) {
         super(application);
@@ -184,6 +189,14 @@ public class GetViewModel extends AndroidViewModel {
 
     }
 
+    public void setNotifyarray(NotifyList notifyarray) {
+        this.notifyarray = notifyarray;
+        this.notifyarrayLiveData.postValue(notifyarray);
+    }
+
+    public MutableLiveData<NotifyList> getNotifyarrayLiveData() {
+        return notifyarrayLiveData;
+    }
 
     public void setAdmin_Primary(String admin_Primary) {
         Admin_Primary = admin_Primary;

@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.adm.Classes.MyLog;
@@ -42,6 +43,15 @@ public class AdaptersNotify extends RecyclerView.Adapter<AdaptersNotify.ViewHold
         final NotifyList list = notifyLists.get(position);
         holder.msg.setText(list.getMsg());
 
+        holder.notification_card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //set click notification details
+                getViewModel.setNotifyarray(list);
+
+            }
+        });
+
     }
 
 
@@ -54,10 +64,12 @@ public class AdaptersNotify extends RecyclerView.Adapter<AdaptersNotify.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView msg;
+        private CardView notification_card;
 
         public ViewHolder(View view) {
             super(view);
             msg = view.findViewById(R.id.msg);
+            notification_card = view.findViewById(R.id.notification_card);
 
 
 

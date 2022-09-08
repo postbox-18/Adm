@@ -68,7 +68,8 @@ public class ViewCartAdapterDate extends RecyclerView.Adapter<ViewCartAdapterDat
 
         final SelectedDateList o_dateLists1=o_dateLists.get(position);
         holder.date.setText(o_dateLists1.getDate());
-        MyLog.e(TAG,"orders>> o_dateLists1.getDate()>>"+o_dateLists1.getDate());
+        MyLog.e(TAG,"notify>>bottomSheet>>orders>> o_dateLists1.getDate()>>"+o_dateLists1.getDate());
+
 
         //get order session map
         orderSessionMap=new LinkedHashMap<>(orderDateMap).get(o_dateLists1.getDate());
