@@ -22,6 +22,7 @@ import com.example.adm.Fragments.Orders.OrdersAdapters.OrderAdapters;
 import com.example.adm.R;
 import com.example.adm.ViewModel.GetViewModel;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -179,7 +180,6 @@ public class OrdersFragment extends Fragment {
                 String phone=str[1];
                 String func=str[2];
                 String date=str[3];
-
                 orderFunc_Map=new LinkedHashMap<>(b_orderMap).get(name+"-"+phone);
                 func_title.setText(func);
                 user_name.setText(name);
@@ -206,6 +206,8 @@ public class OrdersFragment extends Fragment {
                 if(orderLists!=null) {
                     //get session list
                     MyLog.e(TAG,"SessionList>>deatils>>"+orderLists.getS_user_name()+"\t\t"+orderLists.getFunc());
+                    MyLog.e(TAG,"bottomSheet>>"+new GsonBuilder().setPrettyPrinting().create().toJson(b_orderMap));
+
                     orderFunc_Map=b_orderMap.get(orderLists.getS_user_name()+"-"+orderLists.getPhone_number());
                     func_title.setText(orderLists.getFunc());
                     user_name.setText(orderLists.getS_user_name());

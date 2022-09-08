@@ -14,8 +14,9 @@ PENDING
 10-count in notify tab
 11-control panel add biometrics
 21-click on notify msg to view details.
-22-
-
+22-read and unread notification two database.
+23-bug in after close the bottom sheet still show in next tab fragment.
+24
 SOLVED
 1-Control Panel update header and also change in database which have data
 1-add phone to order save list in base

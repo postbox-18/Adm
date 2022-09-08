@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Objects;
 
 public class GetViewModel extends AndroidViewModel {
     //check user login
@@ -888,76 +887,76 @@ public class GetViewModel extends AndroidViewModel {
         databaseReference = firebaseDatabase.getReference("Notifications");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onDataChange(@NonNull DataSnapshot snapshot1) {
                 notifyLists = new ArrayList<>();
-                for (DataSnapshot datas : snapshot.getChildren()) {
-                    String key = datas.getKey().toString();
-                    for (DataSnapshot snapshot1 : datas.getChildren()) {
-                        MyLog.e(TAG, "notify>>key>>" + snapshot1.getKey().toString());
-                        MyLog.e(TAG, "notify>>value>>" + snapshot1.getValue().toString());
+                for (DataSnapshot datas : snapshot1.getChildren()) {
+                    String key = datas.child("msg").getValue().toString();
 
+                    /////////////*******CLEAR EXPIRED DATE**************////////////////////////////
+                    //clear date list
+                    String gn_Date = snapshot1.getKey().toString();
+                    Date date1 = new Date();
+                    Date date2 = new Date();
+                    Date date = new Date();
 
-                        /////////////*******CLEAR EXPIRED DATE**************////////////////////////////
-                        //clear date list
-                        String gn_Date = snapshot1.getKey().toString();
-                        Date date1 = new Date();
-                        Date date2 = new Date();
-                        Date date = new Date();
+                    SimpleDateFormat dates = new SimpleDateFormat("dd/MM/yyyy");
+                    String current_Date = dates.format(date);
+                    gn_Date = gn_Date.replace("-", "/");
+                    MyLog.e(TAG, "notifyDates>>GN>>" + gn_Date + ">>Cure>>" + current_Date);
 
-                        SimpleDateFormat dates = new SimpleDateFormat("dd/MM/yyyy");
-                        String current_Date = dates.format(date);
-                        gn_Date = gn_Date.replace("-", "/");
-                        MyLog.e(TAG, "notifyDates>>GN>>" + gn_Date + ">>Cure>>" + current_Date);
-
-                        //Setting dates
-                        try {
-                            date1 = dates.parse(current_Date);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            date2 = dates.parse(gn_Date);
-                        } catch (ParseException e) {
-                            e.printStackTrace();
-                        }
-                        //MyLog.e(TAG,"dates>>diff>>"+date2.before(date1));
-
-                        if (date2.before(date1)) {
-                            //Comparing dates
-                            long difference = Math.abs(date1.getTime() - date2.getTime());
-                            long differenceDates = difference / (24 * 60 * 60 * 1000);
-
-                            //Convert long to String
-                            String dayDifference = Long.toString(differenceDates);
-                            MyLog.e(TAG, "notifyDates>>differ>>" + dayDifference);
-                            gn_Date = gn_Date.replace("/", "-");
-                            int n = Integer.parseInt(dayDifference);
-                            MyLog.e(TAG, "notifyDates>>delete>>" + n);
-                            if (n >= 7) {
-                                //remove expiry date
-                                firebaseDatabase = FirebaseDatabase.getInstance();
-                                databaseReference = firebaseDatabase.getReference("Notifications");
-                                MyLog.e(TAG, "notifyDates>>\nkey>>" + key + "\t==\tgn_date>>" + gn_Date);
-                                databaseReference.child(key).child(gn_Date).removeValue();
-                            }
-
-                        } else {
-
-                        }
-
-
-                        /////////////***********END END CLEAR EXPIRED DATE END END**********////////////////////////////
-
-
-                        NotifyList list = new NotifyList(
-                                snapshot1.getKey().toString(),
-                                snapshot1.getValue().toString()
-                        );
-                        notifyLists.add(list);
+                    //Setting dates
+                    try {
+                        date1 = dates.parse(current_Date);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
+                    try {
+                        date2 = dates.parse(gn_Date);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    //MyLog.e(TAG,"dates>>diff>>"+date2.before(date1));
+
+                    if (date2.before(date1)) {
+                        //Comparing dates
+                        long difference = Math.abs(date1.getTime() - date2.getTime());
+                        long differenceDates = difference / (24 * 60 * 60 * 1000);
+
+                        //Convert long to String
+                        String dayDifference = Long.toString(differenceDates);
+                        MyLog.e(TAG, "notifyDates>>differ>>" + dayDifference);
+                        gn_Date = gn_Date.replace("/", "-");
+                        int n = Integer.parseInt(dayDifference);
+                        MyLog.e(TAG, "notifyDates>>delete>>" + n);
+                        if (n >= 7) {
+                            //remove expiry date
+                            firebaseDatabase = FirebaseDatabase.getInstance();
+                            databaseReference = firebaseDatabase.getReference("Notifications");
+                            MyLog.e(TAG, "notifyDates>>\nkey>>" + key + "\t==\tgn_date>>" + gn_Date);
+                            databaseReference.child(key).child(gn_Date).removeValue();
+                        }
+
+                    } else {
+
+                    }
+
+
+                    /////////////***********END END CLEAR EXPIRED DATE END END**********////////////////////////////
+
+
+                    NotifyList list = new NotifyList();
+                    list.setMsg(key);
+                    list.setUsername(datas.child("username").getValue().toString());
+                    list.setDate(datas.child("date").getValue().toString());
+                    list.setSession(datas.child("session").getValue().toString());
+                    list.setPhone_number(datas.child("phone_number").getValue().toString());
+                    list.setFunction(datas.child("function").getValue().toString());
+
+                    notifyLists.add(list);
+
                 }
                 notifyListsMutableData.postValue(notifyLists);
-                MyLog.e(TAG, "notify>>" + new GsonBuilder().setPrettyPrinting().create().toJson(notifyLists));
+                MyLog.e(TAG, "notify>>notifyLists>>\n" + new GsonBuilder().setPrettyPrinting().create().toJson(notifyLists));
             }
 
             @Override
